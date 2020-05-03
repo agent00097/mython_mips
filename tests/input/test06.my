@@ -1,0 +1,8 @@
+def countdown() :
+  ! This is a comment
+  a = "this::"
+  more = "string**"
+  print (a," 2 " ,more)
+enddef
+
+countdown()

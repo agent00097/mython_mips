@@ -1,0 +1,15 @@
+def countdown() :
+  n = 10
+  while n > 0 :
+    m = n
+    while m > 0:
+      print (m)
+      m = m - 1
+    endwhile
+    n = n - 2
+  endwhile
+  print (42)
+enddef
+ 
+countdown()
+

@@ -1,0 +1,176 @@
+Starting parse
+Entering state 0
+Reading a token: Next token is token DEF ()
+Shifting token DEF ()
+Entering state 1
+Reading a token: Next token is token ID ()
+Shifting token ID ()
+Entering state 5
+Reading a token: Next token is token LP ()
+Shifting token LP ()
+Entering state 15
+Reading a token: Next token is token RP ()
+Shifting token RP ()
+Entering state 20
+Reading a token: Next token is token COLON ()
+Shifting token COLON ()
+Entering state 42
+Reading a token: Next token is token PRINT ()
+Shifting token PRINT ()
+Entering state 7
+Reading a token: Next token is token LP ()
+Shifting token LP ()
+Entering state 16
+Reading a token: Next token is token INTEGER ()
+Shifting token INTEGER ()
+Entering state 29
+Reducing stack by rule 35 (line 84):
+   $1 = token INTEGER ()
+li $t0, 2
+-> $$ = nterm factor ()
+Stack now 0 1 5 15 20 42 7 16
+Entering state 34
+Reducing stack by rule 33 (line 81):
+   $1 = nterm factor ()
+-> $$ = nterm term ()
+Stack now 0 1 5 15 20 42 7 16
+Entering state 33
+Reading a token: Next token is token RP ()
+Reducing stack by rule 30 (line 77):
+   $1 = nterm term ()
+-> $$ = nterm exp ()
+Stack now 0 1 5 15 20 42 7 16
+Entering state 32
+Next token is token RP ()
+Reducing stack by rule 20 (line 65):
+   $1 = nterm exp ()
+-> $$ = nterm expression ()
+Stack now 0 1 5 15 20 42 7 16
+Entering state 30
+Reducing stack by rule 51 (line 107):
+   $1 = nterm expression ()
+-> $$ = nterm expression_list ()
+Stack now 0 1 5 15 20 42 7 16
+Entering state 36
+Next token is token RP ()
+Shifting token RP ()
+Entering state 58
+Reducing stack by rule 42 (line 92):
+   $1 = token PRINT ()
+   $2 = token LP ()
+   $3 = nterm expression_list ()
+   $4 = token RP ()
+
+li $v0,1
+move $a0,$t0
+syscall
+-> $$ = nterm print_stmt ()
+Stack now 0 1 5 15 20 42
+Entering state 72
+Reducing stack by rule 11 (line 53):
+   $1 = nterm print_stmt ()
+-> $$ = nterm statement ()
+Stack now 0 1 5 15 20 42
+Entering state 69
+Reducing stack by rule 9 (line 50):
+   $1 = nterm statement ()
+-> $$ = nterm statements ()
+Stack now 0 1 5 15 20 42
+Entering state 68
+Reading a token: Next token is token ENDDEF ()
+Shifting token ENDDEF ()
+Entering state 99
+Reducing stack by rule 5 (line 44):
+   $1 = token DEF ()
+   $2 = token ID ()
+   $3 = token LP ()
+   $4 = token RP ()
+   $5 = token COLON ()
+   $6 = nterm statements ()
+   $7 = token ENDDEF ()
+-> $$ = nterm function ()
+Stack now 0
+Entering state 4
+Reducing stack by rule 3 (line 41):
+   $1 = nterm function ()
+-> $$ = nterm function_list ()
+Stack now 0
+Entering state 3
+Reading a token: Next token is token PRINT ()
+Shifting token PRINT ()
+Entering state 7
+Reading a token: Next token is token LP ()
+Shifting token LP ()
+Entering state 16
+Reading a token: Next token is token STRING ()
+Shifting token STRING ()
+Entering state 28
+Reducing stack by rule 36 (line 85):
+   $1 = token STRING ()
+-> $$ = nterm factor ()
+Stack now 0 3 7 16
+Entering state 34
+Reducing stack by rule 33 (line 81):
+   $1 = nterm factor ()
+-> $$ = nterm term ()
+Stack now 0 3 7 16
+Entering state 33
+Reading a token: Next token is token RP ()
+Reducing stack by rule 30 (line 77):
+   $1 = nterm term ()
+-> $$ = nterm exp ()
+Stack now 0 3 7 16
+Entering state 32
+Next token is token RP ()
+Reducing stack by rule 20 (line 65):
+   $1 = nterm exp ()
+-> $$ = nterm expression ()
+Stack now 0 3 7 16
+Entering state 30
+Reducing stack by rule 51 (line 107):
+   $1 = nterm expression ()
+-> $$ = nterm expression_list ()
+Stack now 0 3 7 16
+Entering state 36
+Next token is token RP ()
+Shifting token RP ()
+Entering state 58
+Reducing stack by rule 42 (line 92):
+   $1 = token PRINT ()
+   $2 = token LP ()
+   $3 = nterm expression_list ()
+   $4 = token RP ()
+
+li $v0,1
+move $a0,$t1768444962
+syscall
+-> $$ = nterm print_stmt ()
+Stack now 0 3
+Entering state 10
+Reducing stack by rule 57 (line 116):
+   $1 = nterm print_stmt ()
+-> $$ = nterm end ()
+Stack now 0 3
+Entering state 14
+Reducing stack by rule 55 (line 113):
+   $1 = nterm end ()
+-> $$ = nterm end_list ()
+Stack now 0 3
+Entering state 13
+Reading a token: Now at end of input.
+Reducing stack by rule 1 (line 38):
+   $1 = nterm function_list ()
+   $2 = nterm end_list ()
+
+li $v0,10
+syscall
+-> $$ = nterm program ()
+Stack now 0
+Entering state 2
+Now at end of input.
+Shifting token $end ()
+Entering state 6
+Stack now 0 2 6
+Cleanup: popping token $end ()
+Cleanup: popping nterm program ()
+Input Passed Checking

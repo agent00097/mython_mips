@@ -1,0 +1,8 @@
+def countdown() :
+  ! This is a comment
+  a = 3*2+3-4/2
+  c = input()
+  print (a, 2, c)
+enddef
+
+countdown()

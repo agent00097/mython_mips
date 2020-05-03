@@ -1,0 +1,7 @@
+def countdown() :
+  !  this function is never called so it is meaningless
+  !  However, the grammar requires at least one function decl
+  print (2 )
+enddef
+
+print (3*2+3-4/2)

@@ -9,16 +9,17 @@ int yyerror();
 int yylex();
 const char* pass_msg = "Input Passed Checking\n";
 int semantic_error = 0;
+char function_name[30];
+char last_used[20];
 
 
-//Creating an array of sT_registers that holds int value,t# is empty if it's 0 and 1 if it is occupied
+//Creating an array of sT_registefrsd that hfolds int value,t# is empty if it's 0 and 1 if it is occupied
 int t[8];
-
 %}
  
 
 %union{
-	char collection[400];
+	char id_name[30];
 	char name[30];
 	int value;
 	struct {
@@ -35,18 +36,20 @@ int t[8];
 %token COMMENT
 %token <value> INTEGER
 %token <name> STRING ID
-%type <collection> factor term exp expression expression_list statement statements
 %type <loc> factor term exp expression expression_list
+%type <id_name> headofid
 
 %%
 
 program		: function_list end_list 													{printf("\nli $v0,10\nsyscall\n");}
 
 function_list 	: function_list function 
-		| function
+		| function																		{printf("\t.globl main\nmain\:\n\n");}
 
-function	: DEF ID LP parameters RP COLON statements  ENDDEF 
-		| DEF ID LP RP COLON statements ENDDEF 											{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n\t.text sw $ra,%s_RA\n", $2,$2,$2); }
+headstart	: DEF ID LP																	{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n\t.text\n sw $ra,%s_RA\n\n", $2,$2,$2); strcpy(function_name, $2);}
+
+function	: headstart parameters RP COLON statements  ENDDEF 							
+		| headstart RP COLON statements ENDDEF 											{free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}
 
 parameters	: parameters COMMA ID 
 		| ID
@@ -62,7 +65,9 @@ statement	: assignment_stmt
 		| call_stmt 
 		| return_stmt
 
-assignment_stmt	: ID ASSIGN expression
+headofid	:	ID ASSIGN											  {printf("\t.data\n\t.align 2\n%s_%s\: .word 0\n\t.text\n", function_name, $1); strcpy($$, $1);}
+
+assignment_stmt	: headofid expression								  {printf("sw %s,%s_%s\n\n", last_used, function_name, $1); free_all_registers();}							  
 
 return_stmt	: RETURN exp   
 
@@ -77,16 +82,16 @@ rel_exp		: exp EQ exp
 		| exp GE exp 
 		| LP rel_exp RP
 
-exp		: exp ADD term 												  {$$.reg = $1.reg; $$.value = $1.value + $3.value;  printf("add $t%d,$t%d,$t%d\n", $$.reg, $$.reg, $3.reg); free_register($3.reg);}
-		| exp MINUS term 											  {$$.reg = $1.reg; $$.value = $1.value - $3.value;  printf("sub $t%d,$t%d,$t%d\n", $$.reg, $$.reg, $3.reg); free_register($3.reg);}
+exp		: exp ADD term 												  {$$.reg = $1.reg; $$.value = $1.value + $3.value;  printf("add $t%d,$t%d,$t%d\n", $$.reg, $$.reg, $3.reg); sprintf(last_used, "$t%d", $$.reg);free_register($3.reg);}
+		| exp MINUS term 											  {$$.reg = $1.reg; $$.value = $1.value - $3.value;  printf("sub $t%d,$t%d,$t%d\n", $$.reg, $$.reg, $3.reg); sprintf(last_used, "$t%d", $$.reg);free_register($3.reg);}
 		| term														  {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name);}
 
-term		: term MUL factor 										  {$$.value = $1.value * $3.value; $$.reg = $1.reg; printf("mul $t%d,$t%d,$t%d\n", $$.reg, $$.reg, $3.reg); free_register($3.reg);}
-		| term DIV factor 											  {$$.value = $1.value / $3.value; $$.reg = $1.reg; printf("div $t%d,$t%d,$t%d\n", $$.reg, $$.reg, $3.reg); free_register($3.reg);}
+term		: term MUL factor 										  {$$.value = $1.value * $3.value; $$.reg = $1.reg; printf("mul $t%d,$t%d,$t%d\n", $$.reg, $$.reg, $3.reg); sprintf(last_used, "$t%d", $$.reg); free_register($3.reg);}
+		| term DIV factor 											  {$$.value = $1.value / $3.value; $$.reg = $1.reg; printf("div $t%d,$t%d,$t%d\n", $$.reg, $$.reg, $3.reg); sprintf(last_used, "$t%d", $$.reg); free_register($3.reg);}
 		| factor													  {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name);}
 
 factor		: LP exp RP 
-		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1);}
+		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1); sprintf(last_used, "$t%d", $$.reg);}
 		| STRING 													  {strcpy($$.this_name, $1); $$.is_string = 1;}
 		| ID 
 		| TRUE 
@@ -96,7 +101,7 @@ factor		: LP exp RP
 
 print_stmt	: PRINT LP expression_list RP							  {if ($3.is_string == 1) {printf("\n\t.data\nstr8\:\t.asciiz \"%s\"\n\t.text", $3.this_name);} else {printf("\nli $v0,1\n"); printf("move $a0,$t%d\nsyscall\n", $3.reg);}}
 
-input_stmt	: ID ASSIGN INPUT LP RP
+input_stmt	: headofid INPUT LP RP									  {printf("li $v0,5\nsyscall\n"); sprintf(last_used, "$v0"); printf("sw %s,%s_%s\n", last_used, function_name, $1);}
 
 call_stmt	: ID LP RP 
 		| ID LP expr_list RP
@@ -137,6 +142,13 @@ void free_register(int i) {
 	t[i] = 0;
 }
 
+void free_all_registers() {
+	int i = 0;
+	for(i = 0; i < 8; i++) {
+		t[i] = 0;
+	}
+}
+
 int main() {
 	 //Code for debugging
     #if YYDEBUG == 1
@@ -150,6 +162,11 @@ int main() {
 	fprintf(stderr, "%s", pass_msg);
    }
    return 0;
+}
+
+int lookup(char* name) {
+	//This function should return something if the variable exists
+	return 0;
 }
  
 //int yyerror (char const *s) {

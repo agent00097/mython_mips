@@ -87,8 +87,9 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 20 "p4_c.y"
+#line 21 "p4_c.y"
 
+	char id_name[30];
 	char name[30];
 	int value;
 	struct {
@@ -98,7 +99,7 @@ union YYSTYPE
 		int is_string;
 	} loc;
 
-#line 102 "p4.tab.h"
+#line 103 "p4.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

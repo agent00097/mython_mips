@@ -12,118 +12,122 @@ Grammar
     2 function_list: function_list function
     3              | function
 
-    4 function: DEF ID LP parameters RP COLON statements ENDDEF
-    5         | DEF ID LP RP COLON statements ENDDEF
+    4 headstart: DEF ID LP
 
-    6 parameters: parameters COMMA ID
-    7           | ID
+    5 function: headstart parameters RP COLON statements ENDDEF
+    6         | headstart RP COLON statements ENDDEF
 
-    8 statements: statements statement
-    9           | statement
+    7 parameters: parameters COMMA ID
+    8           | ID
 
-   10 statement: assignment_stmt
-   11          | print_stmt
-   12          | input_stmt
-   13          | condition_stmt
-   14          | while_stmt
-   15          | call_stmt
-   16          | return_stmt
+    9 statements: statements statement
+   10           | statement
 
-   17 assignment_stmt: ID ASSIGN expression
+   11 statement: assignment_stmt
+   12          | print_stmt
+   13          | input_stmt
+   14          | condition_stmt
+   15          | while_stmt
+   16          | call_stmt
+   17          | return_stmt
 
-   18 return_stmt: RETURN exp
+   18 headofid: ID ASSIGN
 
-   19 expression: rel_exp
-   20           | exp
+   19 assignment_stmt: headofid expression
 
-   21 rel_exp: exp EQ exp
-   22        | exp NE exp
-   23        | exp LT exp
-   24        | exp LE exp
-   25        | exp GT exp
-   26        | exp GE exp
-   27        | LP rel_exp RP
+   20 return_stmt: RETURN exp
 
-   28 exp: exp ADD term
-   29    | exp MINUS term
-   30    | term
+   21 expression: rel_exp
+   22           | exp
 
-   31 term: term MUL factor
-   32     | term DIV factor
-   33     | factor
+   23 rel_exp: exp EQ exp
+   24        | exp NE exp
+   25        | exp LT exp
+   26        | exp LE exp
+   27        | exp GT exp
+   28        | exp GE exp
+   29        | LP rel_exp RP
 
-   34 factor: LP exp RP
-   35       | INTEGER
-   36       | STRING
-   37       | ID
-   38       | TRUE
-   39       | FALSE
-   40       | MINUS factor
-   41       | call_stmt
+   30 exp: exp ADD term
+   31    | exp MINUS term
+   32    | term
 
-   42 print_stmt: PRINT LP expression_list RP
+   33 term: term MUL factor
+   34     | term DIV factor
+   35     | factor
 
-   43 input_stmt: ID ASSIGN INPUT LP RP
+   36 factor: LP exp RP
+   37       | INTEGER
+   38       | STRING
+   39       | ID
+   40       | TRUE
+   41       | FALSE
+   42       | MINUS factor
+   43       | call_stmt
 
-   44 call_stmt: ID LP RP
-   45          | ID LP expr_list RP
+   44 print_stmt: PRINT LP expression_list RP
 
-   46 condition_stmt: if_head statements ENDIF
-   47               | if_head statements ELSE COLON statements ENDIF
+   45 input_stmt: headofid INPUT LP RP
 
-   48 if_head: IF expression COLON
+   46 call_stmt: ID LP RP
+   47          | ID LP expr_list RP
 
-   49 while_stmt: WHILE expression COLON statements ENDWHILE
+   48 condition_stmt: if_head statements ENDIF
+   49               | if_head statements ELSE COLON statements ENDIF
 
-   50 expression_list: expression_list COMMA expression
-   51                | expression
+   50 if_head: IF expression COLON
 
-   52 expr_list: expr_list COMMA exp
-   53          | exp
+   51 while_stmt: WHILE expression COLON statements ENDWHILE
 
-   54 end_list: end_list end
-   55         | end
+   52 expression_list: expression_list COMMA expression
+   53                | expression
 
-   56 end: call_stmt
-   57    | print_stmt
-   58    | input_stmt
+   54 expr_list: expr_list COMMA exp
+   55          | exp
+
+   56 end_list: end_list end
+   57         | end
+
+   58 end: call_stmt
+   59    | print_stmt
+   60    | input_stmt
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    ADD (258) 28
-    MINUS (259) 29 40
-    MUL (260) 31
-    DIV (261) 32
-    EQ (262) 21
-    LT (263) 23
-    LE (264) 24
-    GT (265) 25
-    GE (266) 26
-    ASSIGN (267) 17 43
-    NE (268) 22
-    DEF (269) 4 5
-    ENDDEF (270) 4 5
-    IF (271) 48
-    ENDIF (272) 46 47
-    ELSE (273) 47
-    WHILE (274) 49
-    ENDWHILE (275) 49
-    PRINT (276) 42
-    INPUT (277) 43
-    TRUE (278) 38
-    FALSE (279) 39
-    RETURN (280) 18
-    LP (281) 4 5 27 34 42 43 44 45
-    RP (282) 4 5 27 34 42 43 44 45
-    COLON (283) 4 5 47 48 49
-    COMMA (284) 6 50 52
+    ADD (258) 30
+    MINUS (259) 31 42
+    MUL (260) 33
+    DIV (261) 34
+    EQ (262) 23
+    LT (263) 25
+    LE (264) 26
+    GT (265) 27
+    GE (266) 28
+    ASSIGN (267) 18
+    NE (268) 24
+    DEF (269) 4
+    ENDDEF (270) 5 6
+    IF (271) 50
+    ENDIF (272) 48 49
+    ELSE (273) 49
+    WHILE (274) 51
+    ENDWHILE (275) 51
+    PRINT (276) 44
+    INPUT (277) 45
+    TRUE (278) 40
+    FALSE (279) 41
+    RETURN (280) 20
+    LP (281) 4 29 36 44 45 46 47
+    RP (282) 5 6 29 36 44 45 46 47
+    COLON (283) 5 6 49 50 51
+    COMMA (284) 7 52 54
     COMMENT (285)
-    INTEGER <value> (286) 35
-    STRING <name> (287) 36
-    ID <name> (288) 4 5 6 7 17 37 43 44 45
+    INTEGER <value> (286) 37
+    STRING <name> (287) 38
+    ID <name> (288) 4 7 8 18 39 46 47
 
 
 Nonterminals, with rules where they appear
@@ -136,69 +140,75 @@ Nonterminals, with rules where they appear
     function_list (36)
         on left: 2 3
         on right: 1 2
-    function (37)
-        on left: 4 5
+    headstart (37)
+        on left: 4
+        on right: 5 6
+    function (38)
+        on left: 5 6
         on right: 2 3
-    parameters (38)
-        on left: 6 7
-        on right: 4 6
-    statements (39)
-        on left: 8 9
-        on right: 4 5 8 46 47 49
-    statement (40)
-        on left: 10 11 12 13 14 15 16
-        on right: 8 9
-    assignment_stmt (41)
-        on left: 17
-        on right: 10
-    return_stmt (42)
+    parameters (39)
+        on left: 7 8
+        on right: 5 7
+    statements (40)
+        on left: 9 10
+        on right: 5 6 9 48 49 51
+    statement (41)
+        on left: 11 12 13 14 15 16 17
+        on right: 9 10
+    headofid <id_name> (42)
         on left: 18
-        on right: 16
-    expression <loc> (43)
-        on left: 19 20
-        on right: 17 48 49 50 51
-    rel_exp (44)
-        on left: 21 22 23 24 25 26 27
-        on right: 19 27
-    exp <loc> (45)
-        on left: 28 29 30
-        on right: 18 20 21 22 23 24 25 26 28 29 34 52 53
-    term <loc> (46)
-        on left: 31 32 33
-        on right: 28 29 30 31 32
-    factor <loc> (47)
-        on left: 34 35 36 37 38 39 40 41
-        on right: 31 32 33 40
-    print_stmt (48)
-        on left: 42
-        on right: 11 57
-    input_stmt (49)
-        on left: 43
-        on right: 12 58
-    call_stmt (50)
-        on left: 44 45
-        on right: 15 41 56
-    condition_stmt (51)
+        on right: 19 45
+    assignment_stmt (43)
+        on left: 19
+        on right: 11
+    return_stmt (44)
+        on left: 20
+        on right: 17
+    expression <loc> (45)
+        on left: 21 22
+        on right: 19 50 51 52 53
+    rel_exp (46)
+        on left: 23 24 25 26 27 28 29
+        on right: 21 29
+    exp <loc> (47)
+        on left: 30 31 32
+        on right: 20 22 23 24 25 26 27 28 30 31 36 54 55
+    term <loc> (48)
+        on left: 33 34 35
+        on right: 30 31 32 33 34
+    factor <loc> (49)
+        on left: 36 37 38 39 40 41 42 43
+        on right: 33 34 35 42
+    print_stmt (50)
+        on left: 44
+        on right: 12 59
+    input_stmt (51)
+        on left: 45
+        on right: 13 60
+    call_stmt (52)
         on left: 46 47
-        on right: 13
-    if_head (52)
-        on left: 48
-        on right: 46 47
-    while_stmt (53)
-        on left: 49
+        on right: 16 43 58
+    condition_stmt (53)
+        on left: 48 49
         on right: 14
-    expression_list <loc> (54)
-        on left: 50 51
-        on right: 42 50
-    expr_list (55)
+    if_head (54)
+        on left: 50
+        on right: 48 49
+    while_stmt (55)
+        on left: 51
+        on right: 15
+    expression_list <loc> (56)
         on left: 52 53
-        on right: 45 52
-    end_list (56)
+        on right: 44 52
+    expr_list (57)
         on left: 54 55
-        on right: 1 54
-    end (57)
-        on left: 56 57 58
-        on right: 54 55
+        on right: 47 54
+    end_list (58)
+        on left: 56 57
+        on right: 1 56
+    end (59)
+        on left: 58 59 60
+        on right: 56 57
 
 
 State 0
@@ -209,22 +219,22 @@ State 0
 
     program        go to state 2
     function_list  go to state 3
-    function       go to state 4
+    headstart      go to state 4
+    function       go to state 5
 
 
 State 1
 
-    4 function: DEF . ID LP parameters RP COLON statements ENDDEF
-    5         | DEF . ID LP RP COLON statements ENDDEF
+    4 headstart: DEF . ID LP
 
-    ID  shift, and go to state 5
+    ID  shift, and go to state 6
 
 
 State 2
 
     0 $accept: program . $end
 
-    $end  shift, and go to state 6
+    $end  shift, and go to state 7
 
 
 State 3
@@ -233,1309 +243,1324 @@ State 3
     2 function_list: function_list . function
 
     DEF    shift, and go to state 1
-    PRINT  shift, and go to state 7
-    ID     shift, and go to state 8
+    PRINT  shift, and go to state 8
+    ID     shift, and go to state 9
 
-    function    go to state 9
-    print_stmt  go to state 10
-    input_stmt  go to state 11
-    call_stmt   go to state 12
-    end_list    go to state 13
-    end         go to state 14
+    headstart   go to state 4
+    function    go to state 10
+    headofid    go to state 11
+    print_stmt  go to state 12
+    input_stmt  go to state 13
+    call_stmt   go to state 14
+    end_list    go to state 15
+    end         go to state 16
 
 
 State 4
+
+    5 function: headstart . parameters RP COLON statements ENDDEF
+    6         | headstart . RP COLON statements ENDDEF
+
+    RP  shift, and go to state 17
+    ID  shift, and go to state 18
+
+    parameters  go to state 19
+
+
+State 5
 
     3 function_list: function .
 
     $default  reduce using rule 3 (function_list)
 
 
-State 5
-
-    4 function: DEF ID . LP parameters RP COLON statements ENDDEF
-    5         | DEF ID . LP RP COLON statements ENDDEF
-
-    LP  shift, and go to state 15
-
-
 State 6
+
+    4 headstart: DEF ID . LP
+
+    LP  shift, and go to state 20
+
+
+State 7
 
     0 $accept: program $end .
 
     $default  accept
 
 
-State 7
-
-   42 print_stmt: PRINT . LP expression_list RP
-
-    LP  shift, and go to state 16
-
-
 State 8
 
-   43 input_stmt: ID . ASSIGN INPUT LP RP
-   44 call_stmt: ID . LP RP
-   45          | ID . LP expr_list RP
+   44 print_stmt: PRINT . LP expression_list RP
 
-    ASSIGN  shift, and go to state 17
-    LP      shift, and go to state 18
+    LP  shift, and go to state 21
 
 
 State 9
+
+   18 headofid: ID . ASSIGN
+   46 call_stmt: ID . LP RP
+   47          | ID . LP expr_list RP
+
+    ASSIGN  shift, and go to state 22
+    LP      shift, and go to state 23
+
+
+State 10
 
     2 function_list: function_list function .
 
     $default  reduce using rule 2 (function_list)
 
 
-State 10
-
-   57 end: print_stmt .
-
-    $default  reduce using rule 57 (end)
-
-
 State 11
 
-   58 end: input_stmt .
+   45 input_stmt: headofid . INPUT LP RP
 
-    $default  reduce using rule 58 (end)
+    INPUT  shift, and go to state 24
 
 
 State 12
 
-   56 end: call_stmt .
+   59 end: print_stmt .
 
-    $default  reduce using rule 56 (end)
+    $default  reduce using rule 59 (end)
 
 
 State 13
 
-    1 program: function_list end_list .
-   54 end_list: end_list . end
+   60 end: input_stmt .
 
-    PRINT  shift, and go to state 7
-    ID     shift, and go to state 8
-
-    $default  reduce using rule 1 (program)
-
-    print_stmt  go to state 10
-    input_stmt  go to state 11
-    call_stmt   go to state 12
-    end         go to state 19
+    $default  reduce using rule 60 (end)
 
 
 State 14
 
-   55 end_list: end .
+   58 end: call_stmt .
 
-    $default  reduce using rule 55 (end_list)
+    $default  reduce using rule 58 (end)
 
 
 State 15
 
-    4 function: DEF ID LP . parameters RP COLON statements ENDDEF
-    5         | DEF ID LP . RP COLON statements ENDDEF
+    1 program: function_list end_list .
+   56 end_list: end_list . end
 
-    RP  shift, and go to state 20
-    ID  shift, and go to state 21
+    PRINT  shift, and go to state 8
+    ID     shift, and go to state 9
 
-    parameters  go to state 22
+    $default  reduce using rule 1 (program)
+
+    headofid    go to state 11
+    print_stmt  go to state 12
+    input_stmt  go to state 13
+    call_stmt   go to state 14
+    end         go to state 25
 
 
 State 16
 
-   42 print_stmt: PRINT LP . expression_list RP
+   57 end_list: end .
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 26
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    expression       go to state 30
-    rel_exp          go to state 31
-    exp              go to state 32
-    term             go to state 33
-    factor           go to state 34
-    call_stmt        go to state 35
-    expression_list  go to state 36
+    $default  reduce using rule 57 (end_list)
 
 
 State 17
 
-   43 input_stmt: ID ASSIGN . INPUT LP RP
+    6 function: headstart RP . COLON statements ENDDEF
 
-    INPUT  shift, and go to state 37
+    COLON  shift, and go to state 26
 
 
 State 18
 
-   44 call_stmt: ID LP . RP
-   45          | ID LP . expr_list RP
+    8 parameters: ID .
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    RP       shift, and go to state 39
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    exp        go to state 40
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
-    expr_list  go to state 41
+    $default  reduce using rule 8 (parameters)
 
 
 State 19
 
-   54 end_list: end_list end .
+    5 function: headstart parameters . RP COLON statements ENDDEF
+    7 parameters: parameters . COMMA ID
 
-    $default  reduce using rule 54 (end_list)
+    RP     shift, and go to state 27
+    COMMA  shift, and go to state 28
 
 
 State 20
 
-    5 function: DEF ID LP RP . COLON statements ENDDEF
+    4 headstart: DEF ID LP .
 
-    COLON  shift, and go to state 42
+    $default  reduce using rule 4 (headstart)
 
 
 State 21
 
-    7 parameters: ID .
+   44 print_stmt: PRINT LP . expression_list RP
 
-    $default  reduce using rule 7 (parameters)
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 32
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    expression       go to state 36
+    rel_exp          go to state 37
+    exp              go to state 38
+    term             go to state 39
+    factor           go to state 40
+    call_stmt        go to state 41
+    expression_list  go to state 42
 
 
 State 22
 
-    4 function: DEF ID LP parameters . RP COLON statements ENDDEF
-    6 parameters: parameters . COMMA ID
+   18 headofid: ID ASSIGN .
 
-    RP     shift, and go to state 43
-    COMMA  shift, and go to state 44
+    $default  reduce using rule 18 (headofid)
 
 
 State 23
 
-   40 factor: MINUS . factor
+   46 call_stmt: ID LP . RP
+   47          | ID LP . expr_list RP
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    RP       shift, and go to state 44
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
 
-    factor     go to state 45
-    call_stmt  go to state 35
+    exp        go to state 45
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
+    expr_list  go to state 46
 
 
 State 24
 
-   38 factor: TRUE .
+   45 input_stmt: headofid INPUT . LP RP
 
-    $default  reduce using rule 38 (factor)
+    LP  shift, and go to state 47
 
 
 State 25
 
-   39 factor: FALSE .
+   56 end_list: end_list end .
 
-    $default  reduce using rule 39 (factor)
+    $default  reduce using rule 56 (end_list)
 
 
 State 26
 
-   27 rel_exp: LP . rel_exp RP
-   34 factor: LP . exp RP
+    6 function: headstart RP COLON . statements ENDDEF
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 26
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
+    IF      shift, and go to state 48
+    WHILE   shift, and go to state 49
+    PRINT   shift, and go to state 8
+    RETURN  shift, and go to state 50
+    ID      shift, and go to state 9
 
-    rel_exp    go to state 46
-    exp        go to state 47
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
+    statements       go to state 51
+    statement        go to state 52
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
 
 
 State 27
 
-   35 factor: INTEGER .
+    5 function: headstart parameters RP . COLON statements ENDDEF
 
-    $default  reduce using rule 35 (factor)
+    COLON  shift, and go to state 62
 
 
 State 28
 
-   36 factor: STRING .
+    7 parameters: parameters COMMA . ID
 
-    $default  reduce using rule 36 (factor)
+    ID  shift, and go to state 63
 
 
 State 29
 
-   37 factor: ID .
-   44 call_stmt: ID . LP RP
-   45          | ID . LP expr_list RP
+   42 factor: MINUS . factor
 
-    LP  shift, and go to state 18
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
 
-    $default  reduce using rule 37 (factor)
+    factor     go to state 64
+    call_stmt  go to state 41
 
 
 State 30
 
-   51 expression_list: expression .
-
-    $default  reduce using rule 51 (expression_list)
-
-
-State 31
-
-   19 expression: rel_exp .
-
-    $default  reduce using rule 19 (expression)
-
-
-State 32
-
-   20 expression: exp .
-   21 rel_exp: exp . EQ exp
-   22        | exp . NE exp
-   23        | exp . LT exp
-   24        | exp . LE exp
-   25        | exp . GT exp
-   26        | exp . GE exp
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
-
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
-    EQ     shift, and go to state 50
-    LT     shift, and go to state 51
-    LE     shift, and go to state 52
-    GT     shift, and go to state 53
-    GE     shift, and go to state 54
-    NE     shift, and go to state 55
-
-    $default  reduce using rule 20 (expression)
-
-
-State 33
-
-   30 exp: term .
-   31 term: term . MUL factor
-   32     | term . DIV factor
-
-    MUL  shift, and go to state 56
-    DIV  shift, and go to state 57
-
-    $default  reduce using rule 30 (exp)
-
-
-State 34
-
-   33 term: factor .
-
-    $default  reduce using rule 33 (term)
-
-
-State 35
-
-   41 factor: call_stmt .
-
-    $default  reduce using rule 41 (factor)
-
-
-State 36
-
-   42 print_stmt: PRINT LP expression_list . RP
-   50 expression_list: expression_list . COMMA expression
-
-    RP     shift, and go to state 58
-    COMMA  shift, and go to state 59
-
-
-State 37
-
-   43 input_stmt: ID ASSIGN INPUT . LP RP
-
-    LP  shift, and go to state 60
-
-
-State 38
-
-   34 factor: LP . exp RP
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    exp        go to state 61
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
-
-
-State 39
-
-   44 call_stmt: ID LP RP .
-
-    $default  reduce using rule 44 (call_stmt)
-
-
-State 40
-
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
-   53 expr_list: exp .
-
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
-
-    $default  reduce using rule 53 (expr_list)
-
-
-State 41
-
-   45 call_stmt: ID LP expr_list . RP
-   52 expr_list: expr_list . COMMA exp
-
-    RP     shift, and go to state 62
-    COMMA  shift, and go to state 63
-
-
-State 42
-
-    5 function: DEF ID LP RP COLON . statements ENDDEF
-
-    IF      shift, and go to state 64
-    WHILE   shift, and go to state 65
-    PRINT   shift, and go to state 7
-    RETURN  shift, and go to state 66
-    ID      shift, and go to state 67
-
-    statements       go to state 68
-    statement        go to state 69
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
-
-
-State 43
-
-    4 function: DEF ID LP parameters RP . COLON statements ENDDEF
-
-    COLON  shift, and go to state 78
-
-
-State 44
-
-    6 parameters: parameters COMMA . ID
-
-    ID  shift, and go to state 79
-
-
-State 45
-
-   40 factor: MINUS factor .
+   40 factor: TRUE .
 
     $default  reduce using rule 40 (factor)
 
 
+State 31
+
+   41 factor: FALSE .
+
+    $default  reduce using rule 41 (factor)
+
+
+State 32
+
+   29 rel_exp: LP . rel_exp RP
+   36 factor: LP . exp RP
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 32
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    rel_exp    go to state 65
+    exp        go to state 66
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 33
+
+   37 factor: INTEGER .
+
+    $default  reduce using rule 37 (factor)
+
+
+State 34
+
+   38 factor: STRING .
+
+    $default  reduce using rule 38 (factor)
+
+
+State 35
+
+   39 factor: ID .
+   46 call_stmt: ID . LP RP
+   47          | ID . LP expr_list RP
+
+    LP  shift, and go to state 23
+
+    $default  reduce using rule 39 (factor)
+
+
+State 36
+
+   53 expression_list: expression .
+
+    $default  reduce using rule 53 (expression_list)
+
+
+State 37
+
+   21 expression: rel_exp .
+
+    $default  reduce using rule 21 (expression)
+
+
+State 38
+
+   22 expression: exp .
+   23 rel_exp: exp . EQ exp
+   24        | exp . NE exp
+   25        | exp . LT exp
+   26        | exp . LE exp
+   27        | exp . GT exp
+   28        | exp . GE exp
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
+
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
+    EQ     shift, and go to state 69
+    LT     shift, and go to state 70
+    LE     shift, and go to state 71
+    GT     shift, and go to state 72
+    GE     shift, and go to state 73
+    NE     shift, and go to state 74
+
+    $default  reduce using rule 22 (expression)
+
+
+State 39
+
+   32 exp: term .
+   33 term: term . MUL factor
+   34     | term . DIV factor
+
+    MUL  shift, and go to state 75
+    DIV  shift, and go to state 76
+
+    $default  reduce using rule 32 (exp)
+
+
+State 40
+
+   35 term: factor .
+
+    $default  reduce using rule 35 (term)
+
+
+State 41
+
+   43 factor: call_stmt .
+
+    $default  reduce using rule 43 (factor)
+
+
+State 42
+
+   44 print_stmt: PRINT LP expression_list . RP
+   52 expression_list: expression_list . COMMA expression
+
+    RP     shift, and go to state 77
+    COMMA  shift, and go to state 78
+
+
+State 43
+
+   36 factor: LP . exp RP
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    exp        go to state 79
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 44
+
+   46 call_stmt: ID LP RP .
+
+    $default  reduce using rule 46 (call_stmt)
+
+
+State 45
+
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
+   55 expr_list: exp .
+
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
+
+    $default  reduce using rule 55 (expr_list)
+
+
 State 46
 
-   27 rel_exp: LP rel_exp . RP
+   47 call_stmt: ID LP expr_list . RP
+   54 expr_list: expr_list . COMMA exp
 
-    RP  shift, and go to state 80
+    RP     shift, and go to state 80
+    COMMA  shift, and go to state 81
 
 
 State 47
 
-   21 rel_exp: exp . EQ exp
-   22        | exp . NE exp
-   23        | exp . LT exp
-   24        | exp . LE exp
-   25        | exp . GT exp
-   26        | exp . GE exp
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
-   34 factor: LP exp . RP
+   45 input_stmt: headofid INPUT LP . RP
 
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
-    EQ     shift, and go to state 50
-    LT     shift, and go to state 51
-    LE     shift, and go to state 52
-    GT     shift, and go to state 53
-    GE     shift, and go to state 54
-    NE     shift, and go to state 55
-    RP     shift, and go to state 81
+    RP  shift, and go to state 82
 
 
 State 48
 
-   28 exp: exp ADD . term
+   50 if_head: IF . expression COLON
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 32
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
 
-    term       go to state 82
-    factor     go to state 34
-    call_stmt  go to state 35
+    expression  go to state 83
+    rel_exp     go to state 37
+    exp         go to state 38
+    term        go to state 39
+    factor      go to state 40
+    call_stmt   go to state 41
 
 
 State 49
 
-   29 exp: exp MINUS . term
+   51 while_stmt: WHILE . expression COLON statements ENDWHILE
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 32
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
 
-    term       go to state 83
-    factor     go to state 34
-    call_stmt  go to state 35
+    expression  go to state 84
+    rel_exp     go to state 37
+    exp         go to state 38
+    term        go to state 39
+    factor      go to state 40
+    call_stmt   go to state 41
 
 
 State 50
 
-   21 rel_exp: exp EQ . exp
+   20 return_stmt: RETURN . exp
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
 
-    exp        go to state 84
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
+    exp        go to state 85
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
 
 
 State 51
 
-   23 rel_exp: exp LT . exp
+    6 function: headstart RP COLON statements . ENDDEF
+    9 statements: statements . statement
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
+    ENDDEF  shift, and go to state 86
+    IF      shift, and go to state 48
+    WHILE   shift, and go to state 49
+    PRINT   shift, and go to state 8
+    RETURN  shift, and go to state 50
+    ID      shift, and go to state 9
 
-    exp        go to state 85
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
+    statement        go to state 87
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
 
 
 State 52
 
-   24 rel_exp: exp LE . exp
+   10 statements: statement .
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    exp        go to state 86
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
+    $default  reduce using rule 10 (statements)
 
 
 State 53
 
-   25 rel_exp: exp GT . exp
+   19 assignment_stmt: headofid . expression
+   45 input_stmt: headofid . INPUT LP RP
 
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
+    MINUS    shift, and go to state 29
+    INPUT    shift, and go to state 24
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 32
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
 
-    exp        go to state 87
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
+    expression  go to state 88
+    rel_exp     go to state 37
+    exp         go to state 38
+    term        go to state 39
+    factor      go to state 40
+    call_stmt   go to state 41
 
 
 State 54
 
-   26 rel_exp: exp GE . exp
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    exp        go to state 88
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
-
-
-State 55
-
-   22 rel_exp: exp NE . exp
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    exp        go to state 89
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
-
-
-State 56
-
-   31 term: term MUL . factor
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    factor     go to state 90
-    call_stmt  go to state 35
-
-
-State 57
-
-   32 term: term DIV . factor
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    factor     go to state 91
-    call_stmt  go to state 35
-
-
-State 58
-
-   42 print_stmt: PRINT LP expression_list RP .
-
-    $default  reduce using rule 42 (print_stmt)
-
-
-State 59
-
-   50 expression_list: expression_list COMMA . expression
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 26
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    expression  go to state 92
-    rel_exp     go to state 31
-    exp         go to state 32
-    term        go to state 33
-    factor      go to state 34
-    call_stmt   go to state 35
-
-
-State 60
-
-   43 input_stmt: ID ASSIGN INPUT LP . RP
-
-    RP  shift, and go to state 93
-
-
-State 61
-
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
-   34 factor: LP exp . RP
-
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
-    RP     shift, and go to state 81
-
-
-State 62
-
-   45 call_stmt: ID LP expr_list RP .
-
-    $default  reduce using rule 45 (call_stmt)
-
-
-State 63
-
-   52 expr_list: expr_list COMMA . exp
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    exp        go to state 94
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
-
-
-State 64
-
-   48 if_head: IF . expression COLON
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 26
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    expression  go to state 95
-    rel_exp     go to state 31
-    exp         go to state 32
-    term        go to state 33
-    factor      go to state 34
-    call_stmt   go to state 35
-
-
-State 65
-
-   49 while_stmt: WHILE . expression COLON statements ENDWHILE
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 26
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    expression  go to state 96
-    rel_exp     go to state 31
-    exp         go to state 32
-    term        go to state 33
-    factor      go to state 34
-    call_stmt   go to state 35
-
-
-State 66
-
-   18 return_stmt: RETURN . exp
-
-    MINUS    shift, and go to state 23
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 38
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
-
-    exp        go to state 97
-    term       go to state 33
-    factor     go to state 34
-    call_stmt  go to state 35
-
-
-State 67
-
-   17 assignment_stmt: ID . ASSIGN expression
-   43 input_stmt: ID . ASSIGN INPUT LP RP
-   44 call_stmt: ID . LP RP
-   45          | ID . LP expr_list RP
-
-    ASSIGN  shift, and go to state 98
-    LP      shift, and go to state 18
-
-
-State 68
-
-    5 function: DEF ID LP RP COLON statements . ENDDEF
-    8 statements: statements . statement
-
-    ENDDEF  shift, and go to state 99
-    IF      shift, and go to state 64
-    WHILE   shift, and go to state 65
-    PRINT   shift, and go to state 7
-    RETURN  shift, and go to state 66
-    ID      shift, and go to state 67
-
-    statement        go to state 100
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
-
-
-State 69
-
-    9 statements: statement .
-
-    $default  reduce using rule 9 (statements)
-
-
-State 70
-
-   10 statement: assignment_stmt .
-
-    $default  reduce using rule 10 (statement)
-
-
-State 71
-
-   16 statement: return_stmt .
-
-    $default  reduce using rule 16 (statement)
-
-
-State 72
-
-   11 statement: print_stmt .
+   11 statement: assignment_stmt .
 
     $default  reduce using rule 11 (statement)
 
 
-State 73
+State 55
 
-   12 statement: input_stmt .
+   17 statement: return_stmt .
+
+    $default  reduce using rule 17 (statement)
+
+
+State 56
+
+   12 statement: print_stmt .
 
     $default  reduce using rule 12 (statement)
 
 
-State 74
+State 57
 
-   15 statement: call_stmt .
-
-    $default  reduce using rule 15 (statement)
-
-
-State 75
-
-   13 statement: condition_stmt .
+   13 statement: input_stmt .
 
     $default  reduce using rule 13 (statement)
 
 
-State 76
+State 58
 
-   46 condition_stmt: if_head . statements ENDIF
-   47               | if_head . statements ELSE COLON statements ENDIF
+   16 statement: call_stmt .
 
-    IF      shift, and go to state 64
-    WHILE   shift, and go to state 65
-    PRINT   shift, and go to state 7
-    RETURN  shift, and go to state 66
-    ID      shift, and go to state 67
-
-    statements       go to state 101
-    statement        go to state 69
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
+    $default  reduce using rule 16 (statement)
 
 
-State 77
+State 59
 
-   14 statement: while_stmt .
+   14 statement: condition_stmt .
 
     $default  reduce using rule 14 (statement)
 
 
+State 60
+
+   48 condition_stmt: if_head . statements ENDIF
+   49               | if_head . statements ELSE COLON statements ENDIF
+
+    IF      shift, and go to state 48
+    WHILE   shift, and go to state 49
+    PRINT   shift, and go to state 8
+    RETURN  shift, and go to state 50
+    ID      shift, and go to state 9
+
+    statements       go to state 89
+    statement        go to state 52
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
+
+
+State 61
+
+   15 statement: while_stmt .
+
+    $default  reduce using rule 15 (statement)
+
+
+State 62
+
+    5 function: headstart parameters RP COLON . statements ENDDEF
+
+    IF      shift, and go to state 48
+    WHILE   shift, and go to state 49
+    PRINT   shift, and go to state 8
+    RETURN  shift, and go to state 50
+    ID      shift, and go to state 9
+
+    statements       go to state 90
+    statement        go to state 52
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
+
+
+State 63
+
+    7 parameters: parameters COMMA ID .
+
+    $default  reduce using rule 7 (parameters)
+
+
+State 64
+
+   42 factor: MINUS factor .
+
+    $default  reduce using rule 42 (factor)
+
+
+State 65
+
+   29 rel_exp: LP rel_exp . RP
+
+    RP  shift, and go to state 91
+
+
+State 66
+
+   23 rel_exp: exp . EQ exp
+   24        | exp . NE exp
+   25        | exp . LT exp
+   26        | exp . LE exp
+   27        | exp . GT exp
+   28        | exp . GE exp
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
+   36 factor: LP exp . RP
+
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
+    EQ     shift, and go to state 69
+    LT     shift, and go to state 70
+    LE     shift, and go to state 71
+    GT     shift, and go to state 72
+    GE     shift, and go to state 73
+    NE     shift, and go to state 74
+    RP     shift, and go to state 92
+
+
+State 67
+
+   30 exp: exp ADD . term
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    term       go to state 93
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 68
+
+   31 exp: exp MINUS . term
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    term       go to state 94
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 69
+
+   23 rel_exp: exp EQ . exp
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    exp        go to state 95
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 70
+
+   25 rel_exp: exp LT . exp
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    exp        go to state 96
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 71
+
+   26 rel_exp: exp LE . exp
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    exp        go to state 97
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 72
+
+   27 rel_exp: exp GT . exp
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    exp        go to state 98
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 73
+
+   28 rel_exp: exp GE . exp
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    exp        go to state 99
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 74
+
+   24 rel_exp: exp NE . exp
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    exp        go to state 100
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
+
+
+State 75
+
+   33 term: term MUL . factor
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    factor     go to state 101
+    call_stmt  go to state 41
+
+
+State 76
+
+   34 term: term DIV . factor
+
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    factor     go to state 102
+    call_stmt  go to state 41
+
+
+State 77
+
+   44 print_stmt: PRINT LP expression_list RP .
+
+    $default  reduce using rule 44 (print_stmt)
+
+
 State 78
 
-    4 function: DEF ID LP parameters RP COLON . statements ENDDEF
+   52 expression_list: expression_list COMMA . expression
 
-    IF      shift, and go to state 64
-    WHILE   shift, and go to state 65
-    PRINT   shift, and go to state 7
-    RETURN  shift, and go to state 66
-    ID      shift, and go to state 67
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 32
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
 
-    statements       go to state 102
-    statement        go to state 69
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
+    expression  go to state 103
+    rel_exp     go to state 37
+    exp         go to state 38
+    term        go to state 39
+    factor      go to state 40
+    call_stmt   go to state 41
 
 
 State 79
 
-    6 parameters: parameters COMMA ID .
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
+   36 factor: LP exp . RP
 
-    $default  reduce using rule 6 (parameters)
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
+    RP     shift, and go to state 92
 
 
 State 80
 
-   27 rel_exp: LP rel_exp RP .
+   47 call_stmt: ID LP expr_list RP .
 
-    $default  reduce using rule 27 (rel_exp)
+    $default  reduce using rule 47 (call_stmt)
 
 
 State 81
 
-   34 factor: LP exp RP .
+   54 expr_list: expr_list COMMA . exp
 
-    $default  reduce using rule 34 (factor)
+    MINUS    shift, and go to state 29
+    TRUE     shift, and go to state 30
+    FALSE    shift, and go to state 31
+    LP       shift, and go to state 43
+    INTEGER  shift, and go to state 33
+    STRING   shift, and go to state 34
+    ID       shift, and go to state 35
+
+    exp        go to state 104
+    term       go to state 39
+    factor     go to state 40
+    call_stmt  go to state 41
 
 
 State 82
 
-   28 exp: exp ADD term .
-   31 term: term . MUL factor
-   32     | term . DIV factor
+   45 input_stmt: headofid INPUT LP RP .
 
-    MUL  shift, and go to state 56
-    DIV  shift, and go to state 57
-
-    $default  reduce using rule 28 (exp)
+    $default  reduce using rule 45 (input_stmt)
 
 
 State 83
 
-   29 exp: exp MINUS term .
-   31 term: term . MUL factor
-   32     | term . DIV factor
+   50 if_head: IF expression . COLON
 
-    MUL  shift, and go to state 56
-    DIV  shift, and go to state 57
-
-    $default  reduce using rule 29 (exp)
+    COLON  shift, and go to state 105
 
 
 State 84
 
-   21 rel_exp: exp EQ exp .
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
+   51 while_stmt: WHILE expression . COLON statements ENDWHILE
 
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
-
-    $default  reduce using rule 21 (rel_exp)
+    COLON  shift, and go to state 106
 
 
 State 85
 
-   23 rel_exp: exp LT exp .
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
+   20 return_stmt: RETURN exp .
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
 
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
 
-    $default  reduce using rule 23 (rel_exp)
+    $default  reduce using rule 20 (return_stmt)
 
 
 State 86
 
-   24 rel_exp: exp LE exp .
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
+    6 function: headstart RP COLON statements ENDDEF .
 
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
-
-    $default  reduce using rule 24 (rel_exp)
+    $default  reduce using rule 6 (function)
 
 
 State 87
 
-   25 rel_exp: exp GT exp .
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
+    9 statements: statements statement .
 
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
-
-    $default  reduce using rule 25 (rel_exp)
+    $default  reduce using rule 9 (statements)
 
 
 State 88
 
-   26 rel_exp: exp GE exp .
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
+   19 assignment_stmt: headofid expression .
 
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
-
-    $default  reduce using rule 26 (rel_exp)
+    $default  reduce using rule 19 (assignment_stmt)
 
 
 State 89
 
-   22 rel_exp: exp NE exp .
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
+    9 statements: statements . statement
+   48 condition_stmt: if_head statements . ENDIF
+   49               | if_head statements . ELSE COLON statements ENDIF
 
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
+    IF      shift, and go to state 48
+    ENDIF   shift, and go to state 107
+    ELSE    shift, and go to state 108
+    WHILE   shift, and go to state 49
+    PRINT   shift, and go to state 8
+    RETURN  shift, and go to state 50
+    ID      shift, and go to state 9
 
-    $default  reduce using rule 22 (rel_exp)
+    statement        go to state 87
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
 
 
 State 90
 
-   31 term: term MUL factor .
+    5 function: headstart parameters RP COLON statements . ENDDEF
+    9 statements: statements . statement
 
-    $default  reduce using rule 31 (term)
+    ENDDEF  shift, and go to state 109
+    IF      shift, and go to state 48
+    WHILE   shift, and go to state 49
+    PRINT   shift, and go to state 8
+    RETURN  shift, and go to state 50
+    ID      shift, and go to state 9
+
+    statement        go to state 87
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
 
 
 State 91
 
-   32 term: term DIV factor .
+   29 rel_exp: LP rel_exp RP .
 
-    $default  reduce using rule 32 (term)
+    $default  reduce using rule 29 (rel_exp)
 
 
 State 92
 
-   50 expression_list: expression_list COMMA expression .
+   36 factor: LP exp RP .
 
-    $default  reduce using rule 50 (expression_list)
+    $default  reduce using rule 36 (factor)
 
 
 State 93
 
-   43 input_stmt: ID ASSIGN INPUT LP RP .
+   30 exp: exp ADD term .
+   33 term: term . MUL factor
+   34     | term . DIV factor
 
-    $default  reduce using rule 43 (input_stmt)
+    MUL  shift, and go to state 75
+    DIV  shift, and go to state 76
+
+    $default  reduce using rule 30 (exp)
 
 
 State 94
 
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
-   52 expr_list: expr_list COMMA exp .
+   31 exp: exp MINUS term .
+   33 term: term . MUL factor
+   34     | term . DIV factor
 
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
+    MUL  shift, and go to state 75
+    DIV  shift, and go to state 76
 
-    $default  reduce using rule 52 (expr_list)
+    $default  reduce using rule 31 (exp)
 
 
 State 95
 
-   48 if_head: IF expression . COLON
+   23 rel_exp: exp EQ exp .
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
 
-    COLON  shift, and go to state 103
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
+
+    $default  reduce using rule 23 (rel_exp)
 
 
 State 96
 
-   49 while_stmt: WHILE expression . COLON statements ENDWHILE
+   25 rel_exp: exp LT exp .
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
 
-    COLON  shift, and go to state 104
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
+
+    $default  reduce using rule 25 (rel_exp)
 
 
 State 97
 
-   18 return_stmt: RETURN exp .
-   28 exp: exp . ADD term
-   29    | exp . MINUS term
+   26 rel_exp: exp LE exp .
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
 
-    ADD    shift, and go to state 48
-    MINUS  shift, and go to state 49
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
 
-    $default  reduce using rule 18 (return_stmt)
+    $default  reduce using rule 26 (rel_exp)
 
 
 State 98
 
-   17 assignment_stmt: ID ASSIGN . expression
-   43 input_stmt: ID ASSIGN . INPUT LP RP
+   27 rel_exp: exp GT exp .
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
 
-    MINUS    shift, and go to state 23
-    INPUT    shift, and go to state 37
-    TRUE     shift, and go to state 24
-    FALSE    shift, and go to state 25
-    LP       shift, and go to state 26
-    INTEGER  shift, and go to state 27
-    STRING   shift, and go to state 28
-    ID       shift, and go to state 29
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
 
-    expression  go to state 105
-    rel_exp     go to state 31
-    exp         go to state 32
-    term        go to state 33
-    factor      go to state 34
-    call_stmt   go to state 35
+    $default  reduce using rule 27 (rel_exp)
 
 
 State 99
 
-    5 function: DEF ID LP RP COLON statements ENDDEF .
+   28 rel_exp: exp GE exp .
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
 
-    $default  reduce using rule 5 (function)
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
+
+    $default  reduce using rule 28 (rel_exp)
 
 
 State 100
 
-    8 statements: statements statement .
+   24 rel_exp: exp NE exp .
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
 
-    $default  reduce using rule 8 (statements)
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
+
+    $default  reduce using rule 24 (rel_exp)
 
 
 State 101
 
-    8 statements: statements . statement
-   46 condition_stmt: if_head statements . ENDIF
-   47               | if_head statements . ELSE COLON statements ENDIF
+   33 term: term MUL factor .
 
-    IF      shift, and go to state 64
-    ENDIF   shift, and go to state 106
-    ELSE    shift, and go to state 107
-    WHILE   shift, and go to state 65
-    PRINT   shift, and go to state 7
-    RETURN  shift, and go to state 66
-    ID      shift, and go to state 67
-
-    statement        go to state 100
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
+    $default  reduce using rule 33 (term)
 
 
 State 102
 
-    4 function: DEF ID LP parameters RP COLON statements . ENDDEF
-    8 statements: statements . statement
+   34 term: term DIV factor .
 
-    ENDDEF  shift, and go to state 108
-    IF      shift, and go to state 64
-    WHILE   shift, and go to state 65
-    PRINT   shift, and go to state 7
-    RETURN  shift, and go to state 66
-    ID      shift, and go to state 67
-
-    statement        go to state 100
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
+    $default  reduce using rule 34 (term)
 
 
 State 103
 
-   48 if_head: IF expression COLON .
+   52 expression_list: expression_list COMMA expression .
 
-    $default  reduce using rule 48 (if_head)
+    $default  reduce using rule 52 (expression_list)
 
 
 State 104
 
-   49 while_stmt: WHILE expression COLON . statements ENDWHILE
+   30 exp: exp . ADD term
+   31    | exp . MINUS term
+   54 expr_list: expr_list COMMA exp .
 
-    IF      shift, and go to state 64
-    WHILE   shift, and go to state 65
-    PRINT   shift, and go to state 7
-    RETURN  shift, and go to state 66
-    ID      shift, and go to state 67
+    ADD    shift, and go to state 67
+    MINUS  shift, and go to state 68
 
-    statements       go to state 109
-    statement        go to state 69
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
+    $default  reduce using rule 54 (expr_list)
 
 
 State 105
 
-   17 assignment_stmt: ID ASSIGN expression .
+   50 if_head: IF expression COLON .
 
-    $default  reduce using rule 17 (assignment_stmt)
+    $default  reduce using rule 50 (if_head)
 
 
 State 106
 
-   46 condition_stmt: if_head statements ENDIF .
+   51 while_stmt: WHILE expression COLON . statements ENDWHILE
 
-    $default  reduce using rule 46 (condition_stmt)
+    IF      shift, and go to state 48
+    WHILE   shift, and go to state 49
+    PRINT   shift, and go to state 8
+    RETURN  shift, and go to state 50
+    ID      shift, and go to state 9
+
+    statements       go to state 110
+    statement        go to state 52
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
 
 
 State 107
 
-   47 condition_stmt: if_head statements ELSE . COLON statements ENDIF
+   48 condition_stmt: if_head statements ENDIF .
 
-    COLON  shift, and go to state 110
+    $default  reduce using rule 48 (condition_stmt)
 
 
 State 108
 
-    4 function: DEF ID LP parameters RP COLON statements ENDDEF .
+   49 condition_stmt: if_head statements ELSE . COLON statements ENDIF
 
-    $default  reduce using rule 4 (function)
+    COLON  shift, and go to state 111
 
 
 State 109
 
-    8 statements: statements . statement
-   49 while_stmt: WHILE expression COLON statements . ENDWHILE
+    5 function: headstart parameters RP COLON statements ENDDEF .
 
-    IF        shift, and go to state 64
-    WHILE     shift, and go to state 65
-    ENDWHILE  shift, and go to state 111
-    PRINT     shift, and go to state 7
-    RETURN    shift, and go to state 66
-    ID        shift, and go to state 67
-
-    statement        go to state 100
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
+    $default  reduce using rule 5 (function)
 
 
 State 110
 
-   47 condition_stmt: if_head statements ELSE COLON . statements ENDIF
+    9 statements: statements . statement
+   51 while_stmt: WHILE expression COLON statements . ENDWHILE
 
-    IF      shift, and go to state 64
-    WHILE   shift, and go to state 65
-    PRINT   shift, and go to state 7
-    RETURN  shift, and go to state 66
-    ID      shift, and go to state 67
+    IF        shift, and go to state 48
+    WHILE     shift, and go to state 49
+    ENDWHILE  shift, and go to state 112
+    PRINT     shift, and go to state 8
+    RETURN    shift, and go to state 50
+    ID        shift, and go to state 9
 
-    statements       go to state 112
-    statement        go to state 69
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
+    statement        go to state 87
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
 
 
 State 111
 
-   49 while_stmt: WHILE expression COLON statements ENDWHILE .
+   49 condition_stmt: if_head statements ELSE COLON . statements ENDIF
 
-    $default  reduce using rule 49 (while_stmt)
+    IF      shift, and go to state 48
+    WHILE   shift, and go to state 49
+    PRINT   shift, and go to state 8
+    RETURN  shift, and go to state 50
+    ID      shift, and go to state 9
+
+    statements       go to state 113
+    statement        go to state 52
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
 
 
 State 112
 
-    8 statements: statements . statement
-   47 condition_stmt: if_head statements ELSE COLON statements . ENDIF
+   51 while_stmt: WHILE expression COLON statements ENDWHILE .
 
-    IF      shift, and go to state 64
-    ENDIF   shift, and go to state 113
-    WHILE   shift, and go to state 65
-    PRINT   shift, and go to state 7
-    RETURN  shift, and go to state 66
-    ID      shift, and go to state 67
-
-    statement        go to state 100
-    assignment_stmt  go to state 70
-    return_stmt      go to state 71
-    print_stmt       go to state 72
-    input_stmt       go to state 73
-    call_stmt        go to state 74
-    condition_stmt   go to state 75
-    if_head          go to state 76
-    while_stmt       go to state 77
+    $default  reduce using rule 51 (while_stmt)
 
 
 State 113
 
-   47 condition_stmt: if_head statements ELSE COLON statements ENDIF .
+    9 statements: statements . statement
+   49 condition_stmt: if_head statements ELSE COLON statements . ENDIF
 
-    $default  reduce using rule 47 (condition_stmt)
+    IF      shift, and go to state 48
+    ENDIF   shift, and go to state 114
+    WHILE   shift, and go to state 49
+    PRINT   shift, and go to state 8
+    RETURN  shift, and go to state 50
+    ID      shift, and go to state 9
+
+    statement        go to state 87
+    headofid         go to state 53
+    assignment_stmt  go to state 54
+    return_stmt      go to state 55
+    print_stmt       go to state 56
+    input_stmt       go to state 57
+    call_stmt        go to state 58
+    condition_stmt   go to state 59
+    if_head          go to state 60
+    while_stmt       go to state 61
+
+
+State 114
+
+   49 condition_stmt: if_head statements ELSE COLON statements ENDIF .
+
+    $default  reduce using rule 49 (condition_stmt)

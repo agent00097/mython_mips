@@ -15,7 +15,7 @@ int is_print;
 int str;
 
 
-//Creating an array of sTcd_registdefrsd that hfdolds int value,t# is empty if it's 0 and 1 if it is occupied
+//Creating an array of sTcd_registdeffrsd that hfdolds int value,t# is empty if it's 0 and 1 if it is occupied
 int t[8];
 %}
  
@@ -46,7 +46,7 @@ int t[8];
 program		: function_list end_list 													{printf("\nli $v0,10\nsyscall\n");}
 
 function_list 	: function_list function 
-		| function																		{printf("\t.globl main\nmain\:\n\n");}
+		| function																		{printf("\n\t.globl main\n\t.data\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");}
 
 headstart	: DEF ID LP																	{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n\t.text\n sw $ra,%s_RA\n\n", $2,$2,$2); strcpy(function_name, $2);}
 
@@ -109,7 +109,7 @@ print_stmt	: print_head expression_list RP							  {if ($2.is_string == 1) {prin
 
 input_stmt	: headofid INPUT LP RP									  {printf("li $v0,5\nsyscall\n"); sprintf(last_used, "$v0"); printf("sw %s,%s_%s\n", last_used, function_name, $1);}
 
-call_stmt	: ID LP RP 
+call_stmt	: ID LP RP												  {freeTregisters();freeAregisters();printf("jal %s\n", $1);freeTregisters();freeAregisters();} 
 		| ID LP expr_list RP
 
 condition_stmt	: if_head statements ENDIF 
@@ -187,4 +187,21 @@ int yyerror(){
    exit(-1);
 }
 
+void freeTregisters() {
+	printf("sw $t0, main_registers\n");
+	int i = 1;
+	int x = 4;
+	for(i = 1; i < 7; i++) {
+		printf("sw $t%d, main_registers+%d\n",i, x);
+		x += 4;
+	}
+}
 
+void freeAregisters() {
+	int i = 0;
+	int x = 32;
+	for(i = 0; i < 4; i++) {
+		printf("sw $a%d, main_registers+%d\n", i, x);
+		x += 4;
+	}
+}

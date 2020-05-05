@@ -84,7 +84,7 @@ int is_print;
 int str;
 
 
-//Creating an array of sTcd_registdefrsd that hfdolds int value,t# is empty if it's 0 and 1 if it is occupied
+//Creating an array of sTcd_registdeffrsd that hfdolds int value,t# is empty if it's 0 and 1 if it is occupied
 int t[8];
 
 #line 91 "p4.tab.c"
@@ -1461,7 +1461,7 @@ yyreduce:
 
   case 4:
 #line 49 "p4_c.y"
-                                                                                                                                                                        {printf("\t.globl main\nmain\:\n\n");}
+                                                                                                                                                                        {printf("\n\t.globl main\n\t.data\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");}
 #line 1466 "p4.tab.c"
     break;
 
@@ -1561,20 +1561,26 @@ yyreduce:
 #line 1562 "p4.tab.c"
     break;
 
+  case 49:
+#line 112 "p4_c.y"
+                                                                                                                          {freeTregisters();freeAregisters();printf("jal %s\n", (yyvsp[-2].name));freeTregisters();freeAregisters();}
+#line 1568 "p4.tab.c"
+    break;
+
   case 55:
 #line 122 "p4_c.y"
                                                                                  {if(is_print == 1) {if((yyvsp[0].loc).is_string == 1){printf("li $v0,4\nla $a0,STR%d\nsyscall\n",checkFreeStr() - 1); free_all_registers();} else {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}}
-#line 1568 "p4.tab.c"
+#line 1574 "p4.tab.c"
     break;
 
   case 56:
 #line 123 "p4_c.y"
                                                                                                                          {(yyval.loc).reg = (yyvsp[0].loc).reg; (yyval.loc).value = (yyvsp[0].loc).value; strcpy((yyval.loc).this_name, (yyvsp[0].loc).this_name); if(is_print == 1) {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}
-#line 1574 "p4.tab.c"
+#line 1580 "p4.tab.c"
     break;
 
 
-#line 1578 "p4.tab.c"
+#line 1584 "p4.tab.c"
 
       default: break;
     }
@@ -1862,4 +1868,21 @@ int yyerror(){
    exit(-1);
 }
 
+void freeTregisters() {
+	printf("sw $t0, main_registers\n");
+	int i = 1;
+	int x = 4;
+	for(i = 1; i < 7; i++) {
+		printf("sw $t%d, main_registers+%d\n",i, x);
+		x += 4;
+	}
+}
 
+void freeAregisters() {
+	int i = 0;
+	int x = 32;
+	for(i = 0; i < 4; i++) {
+		printf("sw $a%d, main_registers+%d\n", i, x);
+		x += 4;
+	}
+}

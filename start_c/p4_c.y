@@ -4,7 +4,7 @@
 #include <string.h>
 
 extern int yylineno;
-//int yyerror(char const *s);
+//int yyerror(char dcdonsdt *s);
 int yyerror();
 int yylex();
 const char* pass_msg = "Input Passed Checking\n";
@@ -14,8 +14,20 @@ char last_used[20];
 int is_print;
 int str;
 
+//Functions_used
+char* lookup_char(char *name);
 
-//Creating an array of sTcd_registdeffrsd that hfdolds int value,t# is empty if it's 0 and 1 if it is occupied
+struct symbol_table {
+	char id_name[30];
+	int value;
+	char string_value[30];
+	int type;
+} SymbolTable;
+
+struct symbol_table *scope;
+
+
+//Creating an array of sdTcd_registdeffrsdd that hfdolds int value,t# is empty if it's 0 and 1 if it is occupied
 int t[8];
 %}
  
@@ -46,7 +58,7 @@ int t[8];
 program		: function_list end_list 													{printf("\nli $v0,10\nsyscall\n");}
 
 function_list 	: function_list function 
-		| function																		{printf("\n\t.globl main\n\t.data\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");}
+		| function																		{printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");}
 
 headstart	: DEF ID LP																	{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n\t.text\n sw $ra,%s_RA\n\n", $2,$2,$2); strcpy(function_name, $2);}
 
@@ -69,7 +81,7 @@ statement	: assignment_stmt
 
 headofid	:	ID ASSIGN											  {printf("\t.data\n\t.align 2\n%s_%s\: .word 0\n\t.text\n", function_name, $1); strcpy($$, $1);}
 
-assignment_stmt	: headofid expression								  {printf("sw %s,%s_%s\n\n", last_used, function_name, $1); free_all_registers();}							  
+assignment_stmt	: headofid expression								  {printf("sw %s,%s_%s\n\n", last_used, function_name, $1); free_all_registers(); add_in_scope($1,$2.this_name,$2.is_string,$2.value);}							  
 
 return_stmt	: RETURN exp   
 
@@ -94,8 +106,8 @@ term		: term MUL factor 										  {$$.value = $1.value * $3.value; $$.reg = $1
 
 factor		: LP exp RP 
 		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1); sprintf(last_used, "$t%d", $$.reg);}
-		| STRING 													  {strcpy($$.this_name, $1); $$.is_string = 1; printf("\t.data\nSTR%d\:\t.asciiz %s\n\t.text\n",checkFreeStr(), $1); str++;}
-		| ID 
+		| STRING 													  {$$.reg = checkFreeIndex();strcpy($$.this_name, $1); $$.is_string = 1; printf("\t.data\nSTR%d\:\t.asciiz %s\n\t.text\n",checkFreeStr(), $1); str++;sprintf(last_used, "$t%d", $$.reg);printf("la $t%d,STR%d\n",$$.reg,str-1); free_all_registers();}
+		| ID 														  {$$.is_string = lookup_type($1); if(lookup_type($1) == 1) {strcpy($$.this_name, lookup_char($1));} else {$$.value = lookup_int($1);} sprintf(last_used,"$t%d", checkFreeIndex());printf("lw %s, %s_%s\n", last_used, function_name, $1); free_all_registers();}
 		| TRUE 
 		| FALSE 
 		| MINUS factor 
@@ -105,7 +117,7 @@ print_head	: PRINT LP												  {is_print = 1;}
 
 comma_found	: COMMA
 
-print_stmt	: print_head expression_list RP							  {if ($2.is_string == 1) {printf("\n\t.data\nstr8\:\t.asciiz \"%s\"\n\t.text", $2.this_name);is_print = 0;}}
+print_stmt	: print_head expression_list RP							  
 
 input_stmt	: headofid INPUT LP RP									  {printf("li $v0,5\nsyscall\n"); sprintf(last_used, "$v0"); printf("sw %s,%s_%s\n", last_used, function_name, $1);}
 
@@ -119,8 +131,8 @@ if_head		: IF expression COLON
 
 while_stmt	: WHILE expression COLON statements ENDWHILE
 
-expression_list	: expression_list comma_found expression 			 {if(is_print == 1) {if($3.is_string == 1){printf("li $v0,4\nla $a0,STR%d\nsyscall\n",checkFreeStr() - 1); free_all_registers();} else {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}}
-		| expression												 {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); if(is_print == 1) {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}
+expression_list	: expression_list comma_found expression 			 {if(is_print == 1) {if($3.is_string == 1){printf("li $v0,4\nmove $a0,$t%d\nsyscall\n",checkFreeIndex()); free_all_registers();} else {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}}
+		| expression												 {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); if(is_print == 1) {if($1.is_string != 1){printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();} else {printf("li $v0,4\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}} free_all_registers();}
 
 expr_list	: expr_list COMMA exp 
 		| exp
@@ -166,6 +178,8 @@ int main() {
     yydebug = 1;
     #endif
 
+	scope = malloc(20 * sizeof * scope);
+
 	str = 0;
    yyparse();
    if (!semantic_error){
@@ -174,9 +188,43 @@ int main() {
    return 0;
 }
 
-int lookup(char* name) {
-	//This function should return something if the variable exists
-	return 0;
+void add_in_scope(char* id, char* str_value, int type, int value) {
+	for(int i = 0; i < 20; i++) {
+		if(strcmp(scope[i].id_name,"") == 0) {
+			strcpy(scope[i].id_name, id);
+			strcpy(scope[i].string_value, str_value);
+			scope[i].type = type;
+			scope[i].value = value;
+			return;
+		}
+	}
+}
+
+int lookup_type(char* name) {
+	for(int i = 0; i < 20; i++) {
+		if(strcmp(scope[i].id_name,name)) {
+			//We found the ID
+			return scope[i].type;
+		}
+	}
+}
+
+char* lookup_char(char *name) {
+	for(int i = 0; i < 20; i++) {
+		if(strcmp(scope[i].id_name,name)) {
+			//We found the ID
+			return scope[i].string_value;
+		}
+	}
+}
+
+int lookup_int(char *name) {
+	for(int i = 0; i < 20; i++) {
+		if(strcmp(scope[i].id_name,name)) {
+			//We found the ID
+			return scope[i].value;
+		}
+	}
 }
  
 //int yyerror (char const *s) {

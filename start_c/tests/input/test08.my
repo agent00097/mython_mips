@@ -1,0 +1,12 @@
+def absolute() :
+  x = input()
+  if x < 0:
+    print (-x)
+  else :
+      print (x)
+  endif
+enddef
+
+absolute() 
+print("\n")
+absolute()

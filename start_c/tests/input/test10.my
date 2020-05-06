@@ -1,0 +1,11 @@
+def countdown() :
+  n = 20
+  while n > 0 :
+    print (n)
+    n = n - 2
+  endwhile
+  print (42)
+enddef
+ 
+countdown()
+

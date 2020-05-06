@@ -1,0 +1,22 @@
+def max() :
+  x = input()
+  y = input()
+  z = input()
+  if x > y:
+     if x > z:
+       m = x
+     else:
+       m = z
+     endif
+  else: 
+     if y > z:
+       m = y
+     else:
+       m = z
+     endif
+  endif
+  print (m)
+enddef
+
+max() 
+

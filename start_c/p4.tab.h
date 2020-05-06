@@ -87,7 +87,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 35 "p4_c.y"
+#line 36 "p4_c.y"
 
 	char id_name[30];
 	char name[30];

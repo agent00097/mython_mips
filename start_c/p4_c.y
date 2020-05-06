@@ -13,8 +13,9 @@ char function_name[30];
 char last_used[20];
 int is_print;
 int str;
+int label;
 
-//Functions_used
+//Functions_dused
 char* lookup_char(char *name);
 
 struct symbol_table {
@@ -27,7 +28,7 @@ struct symbol_table {
 struct symbol_table *scope;
 
 
-//Creating an array of sdTcd_registdeffrsdd that hfdolds int value,t# is empty if it's 0 and 1 if it is occupied
+//Creating an array of sdTdcsd_regdisdtdeffrsdd that hfdolds int dvalue,t# is empty if it's 0 and 1 if it is occupied
 int t[8];
 %}
  
@@ -51,6 +52,7 @@ int t[8];
 %token <value> INTEGER
 %token <name> STRING ID
 %type <loc> factor term exp expression expression_list
+%type <loc> rel_exp
 %type <id_name> headofid
 
 %%
@@ -85,12 +87,12 @@ assignment_stmt	: headofid expression								  {printf("sw %s,%s_%s\n\n", last_u
 
 return_stmt	: RETURN exp   
 
-expression	: rel_exp
+expression	: rel_exp											      {$$.reg = $1.reg;}
 		| exp													      {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); $$.is_string = $1.is_string;}
 
 rel_exp		: exp EQ exp 
 		| exp NE exp 
-		| exp LT exp 
+		| exp LT exp 												  {$$.reg = $1.reg; printf("slt $t%d,$t%d,$t%d\n", $1.reg,$1.reg,$3.reg);free_register($3.reg);free_register($$.reg);}
 		| exp LE exp 
 		| exp GT exp 
 		| exp GE exp 
@@ -106,11 +108,11 @@ term		: term MUL factor 										  {$$.value = $1.value * $3.value; $$.reg = $1
 
 factor		: LP exp RP 
 		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1); sprintf(last_used, "$t%d", $$.reg);}
-		| STRING 													  {$$.reg = checkFreeIndex();strcpy($$.this_name, $1); $$.is_string = 1; printf("\t.data\nSTR%d\:\t.asciiz %s\n\t.text\n",checkFreeStr(), $1); str++;sprintf(last_used, "$t%d", $$.reg);printf("la $t%d,STR%d\n",$$.reg,str-1); free_all_registers();}
-		| ID 														  {$$.is_string = lookup_type($1); if(lookup_type($1) == 1) {strcpy($$.this_name, lookup_char($1));} else {$$.value = lookup_int($1);} sprintf(last_used,"$t%d", checkFreeIndex());printf("lw %s, %s_%s\n", last_used, function_name, $1); free_all_registers();}
+		| STRING 													  {$$.reg = checkFreeIndex();strcpy($$.this_name, $1); $$.is_string = 1; printf("\t.data\nSTR%d\:\t.asciiz %s\n\t.text\n",checkFreeStr(), $1); str++;sprintf(last_used, "$t%d", $$.reg);printf("la $t%d,STR%d\n",$$.reg,str-1);}
+		| ID 														  {$$.reg = checkFreeIndex();$$.is_string = lookup_type($1); if(lookup_type($1) == 1) {strcpy($$.this_name, lookup_char($1));} else {$$.value = lookup_int($1);} sprintf(last_used,"$t%d", $$.reg);printf("lw %s, %s_%s\n", last_used, function_name, $1);}
 		| TRUE 
 		| FALSE 
-		| MINUS factor 
+		| MINUS factor 												  {printf("neg $t%d,$t%d\n", $2.reg, $2.reg);}
 		| call_stmt
 
 print_head	: PRINT LP												  {is_print = 1;}
@@ -124,14 +126,16 @@ input_stmt	: headofid INPUT LP RP									  {printf("li $v0,5\nsyscall\n"); spri
 call_stmt	: ID LP RP												  {freeTregisters();freeAregisters();printf("jal %s\n", $1);freeTregisters();freeAregisters();} 
 		| ID LP expr_list RP
 
-condition_stmt	: if_head statements ENDIF 
-		| if_head statements ELSE COLON statements ENDIF
+else_colon	: ELSE COLON											  {printf("\nb L%d\nL%d\:\n\t",label, label-1);}
 
-if_head		: IF expression COLON
+condition_stmt	: if_head statements ENDIF 
+		| if_head statements else_colon statements ENDIF			  {printf("\nL%d\:\n\t", label);}
+
+if_head		: IF expression COLON									 {printf("beqz $t%d,L%d\n", $2.reg, checkFreeLabel());}
 
 while_stmt	: WHILE expression COLON statements ENDWHILE
 
-expression_list	: expression_list comma_found expression 			 {if(is_print == 1) {if($3.is_string == 1){printf("li $v0,4\nmove $a0,$t%d\nsyscall\n",checkFreeIndex()); free_all_registers();} else {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}}
+expression_list	: expression_list comma_found expression 			 {if(is_print == 1) {if($3.is_string == 1){printf("li $v0,4\nmove $a0,%s\nsyscall\n",last_used); free_all_registers();} else {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}}
 		| expression												 {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); if(is_print == 1) {if($1.is_string != 1){printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();} else {printf("li $v0,4\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}} free_all_registers();}
 
 expr_list	: expr_list COMMA exp 
@@ -181,6 +185,7 @@ int main() {
 	scope = malloc(20 * sizeof * scope);
 
 	str = 0;
+	label = 0;
    yyparse();
    if (!semantic_error){
 	fprintf(stderr, "%s", pass_msg);
@@ -207,6 +212,11 @@ int lookup_type(char* name) {
 			return scope[i].type;
 		}
 	}
+}
+
+int checkFreeLabel() {
+	label++;
+	return label-1;
 }
 
 char* lookup_char(char *name) {

@@ -1,4 +1,4 @@
-tarting parse
+Starting parse
 Entering state 0
 Reading a token: Next token is token DEF ()
 Shifting token DEF ()
@@ -9,16 +9,16 @@ Entering state 6
 Reading a token: Next token is token LP ()
 Shifting token LP ()
 Entering state 21
-Reducing stack by rule 4 (line 65):
+Reducing stack by rule 4 (line 67):
    $1 = token DEF ()
    $2 = token ID ()
    $3 = token LP ()
         .text
-max:
+countdown:
         .data
- max_RA: .word 0
+ countdown_RA: .word 0
         .text
- sw $ra,max_RA
+ sw $ra,countdown_RA
 
 -> $$ = nterm headstart ()
 Stack now 0
@@ -35,704 +35,293 @@ Entering state 9
 Reading a token: Next token is token ASSIGN ()
 Shifting token ASSIGN ()
 Entering state 23
-Reducing stack by rule 18 (line 84):
+Reducing stack by rule 18 (line 86):
    $1 = token ID ()
    $2 = token ASSIGN ()
         .data
         .align 2
-max_x: .word 0
+countdown_n: .word 0
         .text
 -> $$ = nterm headofid ()
 Stack now 0 4 18 41
 Entering state 70
-Reading a token: Next token is token INPUT ()
-Shifting token INPUT ()
-Entering state 25
-Reading a token: Next token is token LP ()
-Shifting token LP ()
-Entering state 48
-Reading a token: Next token is token RP ()
-Shifting token RP ()
-Entering state 84
-Reducing stack by rule 47 (line 124):
+Reading a token: Next token is token INTEGER ()
+Shifting token INTEGER ()
+Entering state 30
+Reducing stack by rule 37 (line 112):
+   $1 = token INTEGER ()
+li $t0, 20
+-> $$ = nterm factor ()
+Stack now 0 4 18 41 70
+Entering state 37
+Reducing stack by rule 35 (line 109):
+   $1 = nterm factor ()
+-> $$ = nterm term ()
+Stack now 0 4 18 41 70
+Entering state 36
+Reading a token: Next token is token WHILE ()
+Reducing stack by rule 32 (line 105):
+   $1 = nterm term ()
+-> $$ = nterm exp ()
+Stack now 0 4 18 41 70
+Entering state 35
+Next token is token WHILE ()
+Reducing stack by rule 22 (line 93):
+   $1 = nterm exp ()
+-> $$ = nterm expression ()
+Stack now 0 4 18 41 70
+Entering state 103
+Reducing stack by rule 19 (line 88):
    $1 = nterm headofid ()
-   $2 = token INPUT ()
-   $3 = token LP ()
-   $4 = token RP ()
-li $v0,5
-syscall
-sw $v0,max_x
--> $$ = nterm input_stmt ()
+   $2 = nterm expression ()
+sw $t0,countdown_n
+
+-> $$ = nterm assignment_stmt ()
 Stack now 0 4 18 41
-Entering state 74
-Reducing stack by rule 13 (line 78):
-   $1 = nterm input_stmt ()
+Entering state 71
+Reducing stack by rule 11 (line 78):
+   $1 = nterm assignment_stmt ()
 -> $$ = nterm statement ()
 Stack now 0 4 18 41
 Entering state 69
-Reducing stack by rule 10 (line 74):
+Reducing stack by rule 10 (line 76):
    $1 = nterm statement ()
 -> $$ = nterm statements ()
 Stack now 0 4 18 41
 Entering state 68
+Next token is token WHILE ()
+Shifting token WHILE ()
+Entering state 66
+Reading a token: Next token is token ID ()
+Shifting token ID ()
+Entering state 32
+Reading a token: Next token is token GT ()
+Reducing stack by rule 39 (line 114):
+   $1 = token ID ()
+lw $t0, countdown_n
+-> $$ = nterm factor ()
+Stack now 0 4 18 41 68 66
+Entering state 37
+Reducing stack by rule 35 (line 109):
+   $1 = nterm factor ()
+-> $$ = nterm term ()
+Stack now 0 4 18 41 68 66
+Entering state 36
+Next token is token GT ()
+Reducing stack by rule 32 (line 105):
+   $1 = nterm term ()
+-> $$ = nterm exp ()
+Stack now 0 4 18 41 68 66
+Entering state 35
+Next token is token GT ()
+Shifting token GT ()
+Entering state 57
+Reading a token: Next token is token INTEGER ()
+Shifting token INTEGER ()
+Entering state 30
+Reducing stack by rule 37 (line 112):
+   $1 = token INTEGER ()
+li $t1, 0
+-> $$ = nterm factor ()
+Stack now 0 4 18 41 68 66 35 57
+Entering state 37
+Reducing stack by rule 35 (line 109):
+   $1 = nterm factor ()
+-> $$ = nterm term ()
+Stack now 0 4 18 41 68 66 35 57
+Entering state 36
+Reading a token: Next token is token COLON ()
+Reducing stack by rule 32 (line 105):
+   $1 = nterm term ()
+-> $$ = nterm exp ()
+Stack now 0 4 18 41 68 66 35 57
+Entering state 92
+Next token is token COLON ()
+Reducing stack by rule 27 (line 99):
+   $1 = nterm exp ()
+   $2 = token GT ()
+   $3 = nterm exp ()
+sgt $t0,$t0,$t1
+-> $$ = nterm rel_exp ()
+Stack now 0 4 18 41 68 66
+Entering state 34
+Reducing stack by rule 21 (line 92):
+   $1 = nterm rel_exp ()
+-> $$ = nterm expression ()
+Stack now 0 4 18 41 68 66
+Entering state 99
+Next token is token COLON ()
+Shifting token COLON ()
+Entering state 108
+Reading a token: Next token is token PRINT ()
+Shifting token PRINT ()
+Entering state 8
+Reading a token: Next token is token LP ()
+Shifting token LP ()
+Entering state 22
+Reducing stack by rule 44 (line 120):
+   $1 = token PRINT ()
+   $2 = token LP ()
+-> $$ = nterm print_head ()
+Stack now 0 4 18 41 68 66 99 108
+Entering state 12
+Reading a token: Next token is token ID ()
+Shifting token ID ()
+Entering state 32
+Reading a token: Next token is token RP ()
+Reducing stack by rule 39 (line 114):
+   $1 = token ID ()
+lw $t0, countdown_n
+-> $$ = nterm factor ()
+Stack now 0 4 18 41 68 66 99 108 12
+Entering state 37
+Reducing stack by rule 35 (line 109):
+   $1 = nterm factor ()
+-> $$ = nterm term ()
+Stack now 0 4 18 41 68 66 99 108 12
+Entering state 36
+Next token is token RP ()
+Reducing stack by rule 32 (line 105):
+   $1 = nterm term ()
+-> $$ = nterm exp ()
+Stack now 0 4 18 41 68 66 99 108 12
+Entering state 35
+Next token is token RP ()
+Reducing stack by rule 22 (line 93):
+   $1 = nterm exp ()
+-> $$ = nterm expression ()
+Stack now 0 4 18 41 68 66 99 108 12
+Entering state 33
+Reducing stack by rule 56 (line 141):
+   $1 = nterm expression ()
+li $v0,1
+move $a0,$t0
+syscall
+-> $$ = nterm expression_list ()
+Stack now 0 4 18 41 68 66 99 108 12
+Entering state 39
+Next token is token RP ()
+Shifting token RP ()
+Entering state 62
+Reducing stack by rule 46 (line 124):
+   $1 = nterm print_head ()
+   $2 = nterm expression_list ()
+   $3 = token RP ()
+-> $$ = nterm print_stmt ()
+Stack now 0 4 18 41 68 66 99 108
+Entering state 73
+Reducing stack by rule 12 (line 79):
+   $1 = nterm print_stmt ()
+-> $$ = nterm statement ()
+Stack now 0 4 18 41 68 66 99 108
+Entering state 69
+Reducing stack by rule 10 (line 76):
+   $1 = nterm statement ()
+-> $$ = nterm statements ()
+Stack now 0 4 18 41 68 66 99 108
+Entering state 113
 Reading a token: Next token is token ID ()
 Shifting token ID ()
 Entering state 9
 Reading a token: Next token is token ASSIGN ()
 Shifting token ASSIGN ()
 Entering state 23
-Reducing stack by rule 18 (line 84):
+Reducing stack by rule 18 (line 86):
    $1 = token ID ()
    $2 = token ASSIGN ()
-        .data
-        .align 2
-max_y: .word 0
-        .text
 -> $$ = nterm headofid ()
-Stack now 0 4 18 41 68
+Stack now 0 4 18 41 68 66 99 108 113
 Entering state 70
-Reading a token: Next token is token INPUT ()
-Shifting token INPUT ()
-Entering state 25
-Reading a token: Next token is token LP ()
-Shifting token LP ()
-Entering state 48
-Reading a token: Next token is token RP ()
-Shifting token RP ()
-Entering state 84
-Reducing stack by rule 47 (line 124):
+Reading a token: Next token is token ID ()
+Shifting token ID ()
+Entering state 32
+Reading a token: Next token is token MINUS ()
+Reducing stack by rule 39 (line 114):
+   $1 = token ID ()
+lw $t0, countdown_n
+-> $$ = nterm factor ()
+Stack now 0 4 18 41 68 66 99 108 113 70
+Entering state 37
+Reducing stack by rule 35 (line 109):
+   $1 = nterm factor ()
+-> $$ = nterm term ()
+Stack now 0 4 18 41 68 66 99 108 113 70
+Entering state 36
+Next token is token MINUS ()
+Reducing stack by rule 32 (line 105):
+   $1 = nterm term ()
+-> $$ = nterm exp ()
+Stack now 0 4 18 41 68 66 99 108 113 70
+Entering state 35
+Next token is token MINUS ()
+Shifting token MINUS ()
+Entering state 53
+Reading a token: Next token is token INTEGER ()
+Shifting token INTEGER ()
+Entering state 30
+Reducing stack by rule 37 (line 112):
+   $1 = token INTEGER ()
+li $t1, 2
+-> $$ = nterm factor ()
+Stack now 0 4 18 41 68 66 99 108 113 70 35 53
+Entering state 37
+Reducing stack by rule 35 (line 109):
+   $1 = nterm factor ()
+-> $$ = nterm term ()
+Stack now 0 4 18 41 68 66 99 108 113 70 35 53
+Entering state 88
+Reading a token: Next token is token ENDWHILE ()
+Reducing stack by rule 31 (line 104):
+   $1 = nterm exp ()
+   $2 = token MINUS ()
+   $3 = nterm term ()
+sub $t0,$t0,$t1
+-> $$ = nterm exp ()
+Stack now 0 4 18 41 68 66 99 108 113 70
+Entering state 35
+Next token is token ENDWHILE ()
+Reducing stack by rule 22 (line 93):
+   $1 = nterm exp ()
+-> $$ = nterm expression ()
+Stack now 0 4 18 41 68 66 99 108 113 70
+Entering state 103
+Reducing stack by rule 19 (line 88):
    $1 = nterm headofid ()
-   $2 = token INPUT ()
-   $3 = token LP ()
-   $4 = token RP ()
-li $v0,5
-syscall
-sw $v0,max_y
--> $$ = nterm input_stmt ()
-Stack now 0 4 18 41 68
-Entering state 74
-Reducing stack by rule 13 (line 78):
-   $1 = nterm input_stmt ()
+   $2 = nterm expression ()
+sw $t0,countdown_n
+
+-> $$ = nterm assignment_stmt ()
+Stack now 0 4 18 41 68 66 99 108 113
+Entering state 71
+Reducing stack by rule 11 (line 78):
+   $1 = nterm assignment_stmt ()
 -> $$ = nterm statement ()
-Stack now 0 4 18 41 68
+Stack now 0 4 18 41 68 66 99 108 113
 Entering state 102
-Reducing stack by rule 9 (line 73):
+Reducing stack by rule 9 (line 75):
    $1 = nterm statements ()
    $2 = nterm statement ()
 -> $$ = nterm statements ()
-Stack now 0 4 18 41
-Entering state 68
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 9
-Reading a token: Next token is token ASSIGN ()
-Shifting token ASSIGN ()
-Entering state 23
-Reducing stack by rule 18 (line 84):
-   $1 = token ID ()
-   $2 = token ASSIGN ()
-        .data
-        .align 2
-max_z: .word 0
-        .text
--> $$ = nterm headofid ()
+Stack now 0 4 18 41 68 66 99 108
+Entering state 113
+Next token is token ENDWHILE ()
+Shifting token ENDWHILE ()
+Entering state 116
+Reducing stack by rule 54 (line 138):
+   $1 = token WHILE ()
+   $2 = nterm expression ()
+   $3 = token COLON ()
+   $4 = nterm statements ()
+   $5 = token ENDWHILE ()
+-> $$ = nterm while_stmt ()
 Stack now 0 4 18 41 68
-Entering state 70
-Reading a token: Next token is token INPUT ()
-Shifting token INPUT ()
-Entering state 25
-Reading a token: Next token is token LP ()
-Shifting token LP ()
-Entering state 48
-Reading a token: Next token is token RP ()
-Shifting token RP ()
-Entering state 84
-Reducing stack by rule 47 (line 124):
-   $1 = nterm headofid ()
-   $2 = token INPUT ()
-   $3 = token LP ()
-   $4 = token RP ()
-li $v0,5
-syscall
-sw $v0,max_z
--> $$ = nterm input_stmt ()
-Stack now 0 4 18 41 68
-Entering state 74
-Reducing stack by rule 13 (line 78):
-   $1 = nterm input_stmt ()
+Entering state 78
+Reducing stack by rule 15 (line 82):
+   $1 = nterm while_stmt ()
 -> $$ = nterm statement ()
 Stack now 0 4 18 41 68
 Entering state 102
-Reducing stack by rule 9 (line 73):
-   $1 = nterm statements ()
-   $2 = nterm statement ()
--> $$ = nterm statements ()
-Stack now 0 4 18 41
-Entering state 68
-Reading a token: Next token is token IF ()
-Shifting token IF ()
-Entering state 65
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token GT ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-lw $t0, max_x
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 65
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 65
-Entering state 36
-Next token is token GT ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 65
-Entering state 35
-Next token is token GT ()
-Shifting token GT ()
-Entering state 57
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token COLON ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-lw $t1, max_y
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 65 35 57
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 65 35 57
-Entering state 36
-Next token is token COLON ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 65 35 57
-Entering state 92
-Next token is token COLON ()
-Reducing stack by rule 27 (line 97):
-   $1 = nterm exp ()
-   $2 = token GT ()
-   $3 = nterm exp ()
-sgt $t0,$t0,$t1
--> $$ = nterm rel_exp ()
-Stack now 0 4 18 41 68 65
-Entering state 34
-Reducing stack by rule 21 (line 90):
-   $1 = nterm rel_exp ()
--> $$ = nterm expression ()
-Stack now 0 4 18 41 68 65
-Entering state 98
-Next token is token COLON ()
-Shifting token COLON ()
-Entering state 107
-Reducing stack by rule 53 (line 134):
-   $1 = token IF ()
-   $2 = nterm expression ()
-   $3 = token COLON ()
-beqz $t0,L0
--> $$ = nterm if_head ()
-Stack now 0 4 18 41 68
-Entering state 77
-Reading a token: Next token is token IF ()
-Shifting token IF ()
-Entering state 65
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token GT ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-lw $t0, max_x
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 77 65
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 77 65
-Entering state 36
-Next token is token GT ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 77 65
-Entering state 35
-Next token is token GT ()
-Shifting token GT ()
-Entering state 57
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token COLON ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-lw $t1, max_z
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 77 65 35 57
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 77 65 35 57
-Entering state 36
-Next token is token COLON ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 77 65 35 57
-Entering state 92
-Next token is token COLON ()
-Reducing stack by rule 27 (line 97):
-   $1 = nterm exp ()
-   $2 = token GT ()
-   $3 = nterm exp ()
-sgt $t0,$t0,$t1
--> $$ = nterm rel_exp ()
-Stack now 0 4 18 41 68 77 65
-Entering state 34
-Reducing stack by rule 21 (line 90):
-   $1 = nterm rel_exp ()
--> $$ = nterm expression ()
-Stack now 0 4 18 41 68 77 65
-Entering state 98
-Next token is token COLON ()
-Shifting token COLON ()
-Entering state 107
-Reducing stack by rule 53 (line 134):
-   $1 = token IF ()
-   $2 = nterm expression ()
-   $3 = token COLON ()
-beqz $t0,L1
--> $$ = nterm if_head ()
-Stack now 0 4 18 41 68 77
-Entering state 77
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 9
-Reading a token: Next token is token ASSIGN ()
-Shifting token ASSIGN ()
-Entering state 23
-Reducing stack by rule 18 (line 84):
-   $1 = token ID ()
-   $2 = token ASSIGN ()
-        .data
-        .align 2
-max_m: .word 0
-        .text
--> $$ = nterm headofid ()
-Stack now 0 4 18 41 68 77 77
-Entering state 70
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token ELSE ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-lw $t0, max_x
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 77 77 70
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 77 77 70
-Entering state 36
-Next token is token ELSE ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 77 77 70
-Entering state 35
-Next token is token ELSE ()
-Reducing stack by rule 22 (line 91):
-   $1 = nterm exp ()
--> $$ = nterm expression ()
-Stack now 0 4 18 41 68 77 77 70
-Entering state 103
-Reducing stack by rule 19 (line 86):
-   $1 = nterm headofid ()
-   $2 = nterm expression ()
-sw $t0,max_m
-
--> $$ = nterm assignment_stmt ()
-Stack now 0 4 18 41 68 77 77
-Entering state 71
-Reducing stack by rule 11 (line 76):
-   $1 = nterm assignment_stmt ()
--> $$ = nterm statement ()
-Stack now 0 4 18 41 68 77 77
-Entering state 69
-Reducing stack by rule 10 (line 74):
-   $1 = nterm statement ()
--> $$ = nterm statements ()
-Stack now 0 4 18 41 68 77 77
-Entering state 104
-Next token is token ELSE ()
-Shifting token ELSE ()
-Entering state 110
-Reading a token: Next token is token COLON ()
-Shifting token COLON ()
-Entering state 114
-Reducing stack by rule 50 (line 129):
-   $1 = token ELSE ()
-   $2 = token COLON ()
-
-b L2
-L1:
--> $$ = nterm else_colon ()
-Stack now 0 4 18 41 68 77 77 104
-Entering state 111
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 9
-Reading a token: Next token is token ASSIGN ()
-Shifting token ASSIGN ()
-Entering state 23
-Reducing stack by rule 18 (line 84):
-   $1 = token ID ()
-   $2 = token ASSIGN ()
--> $$ = nterm headofid ()
-Stack now 0 4 18 41 68 77 77 104 111
-Entering state 70
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token ENDIF ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-        lw $t0, max_z
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 77 77 104 111 70
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 77 77 104 111 70
-Entering state 36
-Next token is token ENDIF ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 77 77 104 111 70
-Entering state 35
-Next token is token ENDIF ()
-Reducing stack by rule 22 (line 91):
-   $1 = nterm exp ()
--> $$ = nterm expression ()
-Stack now 0 4 18 41 68 77 77 104 111 70
-Entering state 103
-Reducing stack by rule 19 (line 86):
-   $1 = nterm headofid ()
-   $2 = nterm expression ()
-sw $t0,max_m
-
--> $$ = nterm assignment_stmt ()
-Stack now 0 4 18 41 68 77 77 104 111
-Entering state 71
-Reducing stack by rule 11 (line 76):
-   $1 = nterm assignment_stmt ()
--> $$ = nterm statement ()
-Stack now 0 4 18 41 68 77 77 104 111
-Entering state 69
-Reducing stack by rule 10 (line 74):
-   $1 = nterm statement ()
--> $$ = nterm statements ()
-Stack now 0 4 18 41 68 77 77 104 111
-Entering state 115
-Next token is token ENDIF ()
-Shifting token ENDIF ()
-Entering state 117
-Reducing stack by rule 52 (line 132):
-   $1 = nterm if_head ()
-   $2 = nterm statements ()
-   $3 = nterm else_colon ()
-   $4 = nterm statements ()
-   $5 = token ENDIF ()
-
-L2:
--> $$ = nterm condition_stmt ()
-Stack now 0 4 18 41 68 77
-Entering state 76
-Reducing stack by rule 14 (line 79):
-   $1 = nterm condition_stmt ()
--> $$ = nterm statement ()
-Stack now 0 4 18 41 68 77
-Entering state 69
-Reducing stack by rule 10 (line 74):
-   $1 = nterm statement ()
--> $$ = nterm statements ()
-Stack now 0 4 18 41 68 77
-Entering state 104
-Reading a token: Next token is token ELSE ()
-Shifting token ELSE ()
-Entering state 110
-Reading a token: Next token is token COLON ()
-Shifting token COLON ()
-Entering state 114
-Reducing stack by rule 50 (line 129):
-   $1 = token ELSE ()
-   $2 = token COLON ()
-
-b L2
-L1:
--> $$ = nterm else_colon ()
-Stack now 0 4 18 41 68 77 104
-Entering state 111
-Reading a token: Next token is token IF ()
-Shifting token IF ()
-Entering state 65
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token GT ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-        lw $t0, max_y
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 77 104 111 65
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 77 104 111 65
-Entering state 36
-Next token is token GT ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 77 104 111 65
-Entering state 35
-Next token is token GT ()
-Shifting token GT ()
-Entering state 57
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token COLON ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-lw $t1, max_z
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 77 104 111 65 35 57
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 77 104 111 65 35 57
-Entering state 36
-Next token is token COLON ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 77 104 111 65 35 57
-Entering state 92
-Next token is token COLON ()
-Reducing stack by rule 27 (line 97):
-   $1 = nterm exp ()
-   $2 = token GT ()
-   $3 = nterm exp ()
-sgt $t0,$t0,$t1
--> $$ = nterm rel_exp ()
-Stack now 0 4 18 41 68 77 104 111 65
-Entering state 34
-Reducing stack by rule 21 (line 90):
-   $1 = nterm rel_exp ()
--> $$ = nterm expression ()
-Stack now 0 4 18 41 68 77 104 111 65
-Entering state 98
-Next token is token COLON ()
-Shifting token COLON ()
-Entering state 107
-Reducing stack by rule 53 (line 134):
-   $1 = token IF ()
-   $2 = nterm expression ()
-   $3 = token COLON ()
-beqz $t0,L2
--> $$ = nterm if_head ()
-Stack now 0 4 18 41 68 77 104 111
-Entering state 77
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 9
-Reading a token: Next token is token ASSIGN ()
-Shifting token ASSIGN ()
-Entering state 23
-Reducing stack by rule 18 (line 84):
-   $1 = token ID ()
-   $2 = token ASSIGN ()
--> $$ = nterm headofid ()
-Stack now 0 4 18 41 68 77 104 111 77
-Entering state 70
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token ELSE ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-lw $t0, max_y
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 77 104 111 77 70
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 77 104 111 77 70
-Entering state 36
-Next token is token ELSE ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 77 104 111 77 70
-Entering state 35
-Next token is token ELSE ()
-Reducing stack by rule 22 (line 91):
-   $1 = nterm exp ()
--> $$ = nterm expression ()
-Stack now 0 4 18 41 68 77 104 111 77 70
-Entering state 103
-Reducing stack by rule 19 (line 86):
-   $1 = nterm headofid ()
-   $2 = nterm expression ()
-sw $t0,max_m
-
--> $$ = nterm assignment_stmt ()
-Stack now 0 4 18 41 68 77 104 111 77
-Entering state 71
-Reducing stack by rule 11 (line 76):
-   $1 = nterm assignment_stmt ()
--> $$ = nterm statement ()
-Stack now 0 4 18 41 68 77 104 111 77
-Entering state 69
-Reducing stack by rule 10 (line 74):
-   $1 = nterm statement ()
--> $$ = nterm statements ()
-Stack now 0 4 18 41 68 77 104 111 77
-Entering state 104
-Next token is token ELSE ()
-Shifting token ELSE ()
-Entering state 110
-Reading a token: Next token is token COLON ()
-Shifting token COLON ()
-Entering state 114
-Reducing stack by rule 50 (line 129):
-   $1 = token ELSE ()
-   $2 = token COLON ()
-
-b L3
-L2:
--> $$ = nterm else_colon ()
-Stack now 0 4 18 41 68 77 104 111 77 104
-Entering state 111
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 9
-Reading a token: Next token is token ASSIGN ()
-Shifting token ASSIGN ()
-Entering state 23
-Reducing stack by rule 18 (line 84):
-   $1 = token ID ()
-   $2 = token ASSIGN ()
--> $$ = nterm headofid ()
-Stack now 0 4 18 41 68 77 104 111 77 104 111
-Entering state 70
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token ENDIF ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-        lw $t0, max_z
--> $$ = nterm factor ()
-Stack now 0 4 18 41 68 77 104 111 77 104 111 70
-Entering state 37
-Reducing stack by rule 35 (line 107):
-   $1 = nterm factor ()
--> $$ = nterm term ()
-Stack now 0 4 18 41 68 77 104 111 77 104 111 70
-Entering state 36
-Next token is token ENDIF ()
-Reducing stack by rule 32 (line 103):
-   $1 = nterm term ()
--> $$ = nterm exp ()
-Stack now 0 4 18 41 68 77 104 111 77 104 111 70
-Entering state 35
-Next token is token ENDIF ()
-Reducing stack by rule 22 (line 91):
-   $1 = nterm exp ()
--> $$ = nterm expression ()
-Stack now 0 4 18 41 68 77 104 111 77 104 111 70
-Entering state 103
-Reducing stack by rule 19 (line 86):
-   $1 = nterm headofid ()
-   $2 = nterm expression ()
-sw $t0,max_m
-
--> $$ = nterm assignment_stmt ()
-Stack now 0 4 18 41 68 77 104 111 77 104 111
-Entering state 71
-Reducing stack by rule 11 (line 76):
-   $1 = nterm assignment_stmt ()
--> $$ = nterm statement ()
-Stack now 0 4 18 41 68 77 104 111 77 104 111
-Entering state 69
-Reducing stack by rule 10 (line 74):
-   $1 = nterm statement ()
--> $$ = nterm statements ()
-Stack now 0 4 18 41 68 77 104 111 77 104 111
-Entering state 115
-Next token is token ENDIF ()
-Shifting token ENDIF ()
-Entering state 117
-Reducing stack by rule 52 (line 132):
-   $1 = nterm if_head ()
-   $2 = nterm statements ()
-   $3 = nterm else_colon ()
-   $4 = nterm statements ()
-   $5 = token ENDIF ()
-
-L3:
--> $$ = nterm condition_stmt ()
-Stack now 0 4 18 41 68 77 104 111
-Entering state 76
-Reducing stack by rule 14 (line 79):
-   $1 = nterm condition_stmt ()
--> $$ = nterm statement ()
-Stack now 0 4 18 41 68 77 104 111
-Entering state 69
-Reducing stack by rule 10 (line 74):
-   $1 = nterm statement ()
--> $$ = nterm statements ()
-Stack now 0 4 18 41 68 77 104 111
-Entering state 115
-Reading a token: Next token is token ENDIF ()
-Shifting token ENDIF ()
-Entering state 117
-Reducing stack by rule 52 (line 132):
-   $1 = nterm if_head ()
-   $2 = nterm statements ()
-   $3 = nterm else_colon ()
-   $4 = nterm statements ()
-   $5 = token ENDIF ()
-
-L3:
--> $$ = nterm condition_stmt ()
-Stack now 0 4 18 41 68
-Entering state 76
-Reducing stack by rule 14 (line 79):
-   $1 = nterm condition_stmt ()
--> $$ = nterm statement ()
-Stack now 0 4 18 41 68
-Entering state 102
-Reducing stack by rule 9 (line 73):
+Reducing stack by rule 9 (line 75):
    $1 = nterm statements ()
    $2 = nterm statement ()
 -> $$ = nterm statements ()
@@ -744,40 +333,39 @@ Entering state 8
 Reading a token: Next token is token LP ()
 Shifting token LP ()
 Entering state 22
-Reducing stack by rule 44 (line 118):
+Reducing stack by rule 44 (line 120):
    $1 = token PRINT ()
    $2 = token LP ()
 -> $$ = nterm print_head ()
 Stack now 0 4 18 41 68
 Entering state 12
-Reading a token: Next token is token ID ()
-Shifting token ID ()
-Entering state 32
-Reading a token: Next token is token RP ()
-Reducing stack by rule 39 (line 112):
-   $1 = token ID ()
-        lw $t0, max_m
+Reading a token: Next token is token INTEGER ()
+Shifting token INTEGER ()
+Entering state 30
+Reducing stack by rule 37 (line 112):
+   $1 = token INTEGER ()
+li $t0, 42
 -> $$ = nterm factor ()
 Stack now 0 4 18 41 68 12
 Entering state 37
-Reducing stack by rule 35 (line 107):
+Reducing stack by rule 35 (line 109):
    $1 = nterm factor ()
 -> $$ = nterm term ()
 Stack now 0 4 18 41 68 12
 Entering state 36
-Next token is token RP ()
-Reducing stack by rule 32 (line 103):
+Reading a token: Next token is token RP ()
+Reducing stack by rule 32 (line 105):
    $1 = nterm term ()
 -> $$ = nterm exp ()
 Stack now 0 4 18 41 68 12
 Entering state 35
 Next token is token RP ()
-Reducing stack by rule 22 (line 91):
+Reducing stack by rule 22 (line 93):
    $1 = nterm exp ()
 -> $$ = nterm expression ()
 Stack now 0 4 18 41 68 12
 Entering state 33
-Reducing stack by rule 56 (line 139):
+Reducing stack by rule 56 (line 141):
    $1 = nterm expression ()
 li $v0,1
 move $a0,$t0
@@ -788,19 +376,19 @@ Entering state 39
 Next token is token RP ()
 Shifting token RP ()
 Entering state 62
-Reducing stack by rule 46 (line 122):
+Reducing stack by rule 46 (line 124):
    $1 = nterm print_head ()
    $2 = nterm expression_list ()
    $3 = token RP ()
 -> $$ = nterm print_stmt ()
 Stack now 0 4 18 41 68
 Entering state 73
-Reducing stack by rule 12 (line 77):
+Reducing stack by rule 12 (line 79):
    $1 = nterm print_stmt ()
 -> $$ = nterm statement ()
 Stack now 0 4 18 41 68
 Entering state 102
-Reducing stack by rule 9 (line 73):
+Reducing stack by rule 9 (line 75):
    $1 = nterm statements ()
    $2 = nterm statement ()
 -> $$ = nterm statements ()
@@ -809,18 +397,18 @@ Entering state 68
 Reading a token: Next token is token ENDDEF ()
 Shifting token ENDDEF ()
 Entering state 101
-Reducing stack by rule 6 (line 68):
+Reducing stack by rule 6 (line 70):
    $1 = nterm headstart ()
    $2 = token RP ()
    $3 = token COLON ()
    $4 = nterm statements ()
    $5 = token ENDDEF ()
-        lw $t0,max_RA
+        lw $t0,countdown_RA
         jr $t0
 -> $$ = nterm function ()
 Stack now 0
 Entering state 5
-Reducing stack by rule 3 (line 63):
+Reducing stack by rule 3 (line 65):
    $1 = nterm function ()
 
         .globl main
@@ -844,7 +432,7 @@ Entering state 24
 Reading a token: Next token is token RP ()
 Shifting token RP ()
 Entering state 45
-Reducing stack by rule 48 (line 126):
+Reducing stack by rule 48 (line 128):
    $1 = token ID ()
    $2 = token LP ()
    $3 = token RP ()
@@ -859,7 +447,7 @@ sw $a0, main_registers+32
 sw $a1, main_registers+36
 sw $a2, main_registers+40
 sw $a3, main_registers+44
-jal max
+jal countdown
 sw $t0, main_registers
 sw $t1, main_registers+4
 sw $t2, main_registers+8
@@ -874,18 +462,18 @@ sw $a3, main_registers+44
 -> $$ = nterm call_stmt ()
 Stack now 0 3
 Entering state 15
-Reducing stack by rule 61 (line 147):
+Reducing stack by rule 61 (line 149):
    $1 = nterm call_stmt ()
 -> $$ = nterm end ()
 Stack now 0 3
 Entering state 17
-Reducing stack by rule 60 (line 145):
+Reducing stack by rule 60 (line 147):
    $1 = nterm end ()
 -> $$ = nterm end_list ()
 Stack now 0 3
 Entering state 16
 Reading a token: Now at end of input.
-Reducing stack by rule 1 (line 60):
+Reducing stack by rule 1 (line 62):
    $1 = nterm function_list ()
    $2 = nterm end_list ()
 

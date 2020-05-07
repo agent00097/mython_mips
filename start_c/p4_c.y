@@ -4,7 +4,7 @@
 #include <string.h>
 
 extern int yylineno;
-//int yyerror(char dcdonsdt *s);
+//int yyerror(char dcddonsdt *s);
 int yyerror();
 int yylex();
 const char* pass_msg = "Input Passed Checking\n";
@@ -135,7 +135,11 @@ condition_stmt	: if_head statements ENDIF
 
 if_head		: IF expression COLON									 {label+=2;pushTwoOnStack();printf("beqz $t%d,L%d\n", $2.reg, labels[stack_index-1]);}
 
-while_stmt	: WHILE expression COLON statements ENDWHILE
+while_head	: WHILE													 {label+=2;pushTwoOnStack();printf("L%d\:\t",labels[stack_index-1]);}
+
+while_other_head	: while_head expression COLON					 {printf("beqz $t%d,L%d\n",$2.reg,labels[stack_index]);}
+
+while_stmt	: while_other_head statements ENDWHILE					 {printf("b L%d\nL%d\:\n",labels[stack_index-1],labels[stack_index]); popTwoOnStack();}
 
 expression_list	: expression_list comma_found expression 			 {if(is_print == 1) {if($3.is_string == 1){printf("li $v0,4\nmove $a0,%s\nsyscall\n",last_used); free_all_registers();} else {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}}
 		| expression												 {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); if(is_print == 1) {if($1.is_string != 1){printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();} else {printf("li $v0,4\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}} free_all_registers();}

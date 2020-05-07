@@ -17,6 +17,7 @@ int label;
 int labels[15];
 int stack_index;
 int function_called;
+int is_return;
 
 //Functions_dused
 char* lookup_char(char *name);
@@ -71,7 +72,7 @@ headstart	: function_start LP	parameters RP COLON										{printf("\t.text\n sw
 			| function_start LP RP COLON												{printf("\t.text\n sw $ra,%s_RA\n\n", function_name);}
 function_start	: DEF ID																{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n", $2,$2); strcpy(function_name, $2);}
 
-function	: headstart statements  ENDDEF 												{free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}
+function	: headstart statements  ENDDEF 												{if(is_return == 1){free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tmove $v0,%s\n", last_used);printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}else{free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}}
 
 parameters	: parameters COMMA ID 														{printf(" %s_%s\:   .word 0\n",function_name,$3); add_in_scope($3, "", 2, 0);}
 		| ID														 				 	{printf(" %s_%s\:   .word 0\n",function_name,$1); add_in_scope($1, "", 2, 0);}												
@@ -91,7 +92,7 @@ headofid	:	ID ASSIGN											  {if(itExists($1) == 1) {printf("\t.data\n\t.ali
 
 assignment_stmt	: headofid expression								  {printf("sw %s,%s_%s\n\n", last_used, function_name, $1); free_all_registers(); add_in_scope($1,$2.this_name,$2.is_string,$2.value);}							  
 
-return_stmt	: RETURN exp   
+return_stmt	: RETURN exp 											  {is_return = 1;}										  
 
 expression	: rel_exp											      {$$.reg = $1.reg;}
 		| exp													      {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); $$.is_string = $1.is_string;}
@@ -113,7 +114,7 @@ term		: term MUL factor 										  {$$.value = $1.value * $3.value; $$.reg = $1
 		| factor													  {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); $$.is_string = $1.is_string;}
 
 factor		: LP exp RP 
-		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1); sprintf(last_used, "$t%d", $$.reg); if(function_called == 1){printf("move $a%d, $t%d\n",checkFreeIndexA(),$$.reg);}}
+		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1); sprintf(last_used, "$t%d", $$.reg); if(function_called == 1){printf("move $a%d, $t%d\n",checkFreeIndexA(),$$.reg); free_all_registers();}}
 		| STRING 													  {$$.reg = checkFreeIndex();strcpy($$.this_name, $1); $$.is_string = 1; printf("\t.data\nSTR%d\:\t.asciiz %s\n\t.text\n",checkFreeStr(), $1); str++;sprintf(last_used, "$t%d", $$.reg);printf("la $t%d,STR%d\n",$$.reg,str-1);}
 		| ID 														  {$$.reg = checkFreeIndex();$$.is_string = lookup_type($1); if(lookup_type($1) == 1) {strcpy($$.this_name, lookup_char($1));} else {$$.value = lookup_int($1);} sprintf(last_used,"$t%d", $$.reg);printf("lw %s, %s_%s\n", last_used, function_name, $1);}
 		| TRUE 
@@ -234,7 +235,7 @@ int main() {
     extern int yydebug;
     yydebug = 1;
     #endif
-
+	is_return = 0;
 	stack_index = -1;
 	scope = malloc(20 * sizeof * scope);
 	for(int i = 0; i < 15; i++) {

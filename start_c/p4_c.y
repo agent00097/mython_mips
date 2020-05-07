@@ -63,13 +63,16 @@ int a[4];
 
 %%
 
-program		: function_list end_list 													{printf("\nli $v0,10\nsyscall\n");}
+program		: function_list_end end_list 													{printf("\nli $v0,10\nsyscall\n");}
 
-function_list 	: function_list function 
-		| function																		{printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");}
+function_list_end	: function_list														{printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");freeScopes();}
+
+function_list 	: function_list function 												{freeScopes();}	
+		| function																		{freeScopes();}																	
 
 headstart	: function_start LP	parameters RP COLON										{printf("\t.text\n sw $ra,%s_RA\n\n", function_name);print_all_scope();}
 			| function_start LP RP COLON												{printf("\t.text\n sw $ra,%s_RA\n\n", function_name);}
+
 function_start	: DEF ID																{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n", $2,$2); strcpy(function_name, $2);}
 
 function	: headstart statements  ENDDEF 												{if(is_return == 1){free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tmove $v0,%s\n", last_used);printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}else{free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}}
@@ -116,7 +119,7 @@ term		: term MUL factor 										  {$$.value = $1.value * $3.value; $$.reg = $1
 factor		: LP exp RP 
 		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1); sprintf(last_used, "$t%d", $$.reg); if(function_called == 1){printf("move $a%d, $t%d\n",checkFreeIndexA(),$$.reg); free_all_registers();}}
 		| STRING 													  {$$.reg = checkFreeIndex();strcpy($$.this_name, $1); $$.is_string = 1; printf("\t.data\nSTR%d\:\t.asciiz %s\n\t.text\n",checkFreeStr(), $1); str++;sprintf(last_used, "$t%d", $$.reg);printf("la $t%d,STR%d\n",$$.reg,str-1);}
-		| ID 														  {$$.reg = checkFreeIndex();$$.is_string = lookup_type($1); if(lookup_type($1) == 1) {strcpy($$.this_name, lookup_char($1));} else {$$.value = lookup_int($1);} sprintf(last_used,"$t%d", $$.reg);printf("lw %s, %s_%s\n", last_used, function_name, $1);}
+		| ID 														  {$$.reg = checkFreeIndex();$$.is_string = lookup_type($1); if(lookup_type($1) == 1) {strcpy($$.this_name, lookup_char($1));} else {$$.value = lookup_int($1);} sprintf(last_used,"$t%d", $$.reg);printf("lw %s, %s_%s\n", last_used, function_name, $1);if(function_called == 1){printf("move $a%d, $t%d\n",checkFreeIndexA(),$$.reg); free_all_registers();}}
 		| TRUE 
 		| FALSE 
 		| MINUS factor 												  {printf("neg $t%d,$t%d\n", $2.reg, $2.reg);}
@@ -209,6 +212,13 @@ int itExists(char *name) {
 		}
 	}
 	return 1;
+}
+
+void freeScopes() {
+	int i = 0;
+	for(i = 0; i < 20; i++) {
+		strcpy(scope[i].id_name,"");
+	}
 }
 
 void free_register(int i) {

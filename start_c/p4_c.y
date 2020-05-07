@@ -4,7 +4,7 @@
 #include <string.h>
 
 extern int yylineno;
-//int yyerror(char dcddonsdt *s);
+//int yyerror(char dcdddonsdt *s);
 int yyerror();
 int yylex();
 const char* pass_msg = "Input Passed Checking\n";
@@ -16,6 +16,7 @@ int str;
 int label;
 int labels[15];
 int stack_index;
+int function_called;
 
 //Functions_dused
 char* lookup_char(char *name);
@@ -32,6 +33,7 @@ struct symbol_table *scope;
 
 //Creating an array of sdTdcsd_regdisdtdeffrsdd thcat hfdolds int dvalue,t# is empty if it's 0 and 1 if it is occupied
 int t[8];
+int a[4];
 %}
  
 
@@ -56,6 +58,7 @@ int t[8];
 %type <loc> factor term exp expression expression_list
 %type <loc> rel_exp
 %type <id_name> headofid
+%type <name> id_lp
 
 %%
 
@@ -64,13 +67,14 @@ program		: function_list end_list 													{printf("\nli $v0,10\nsyscall\n")
 function_list 	: function_list function 
 		| function																		{printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");}
 
-headstart	: DEF ID LP																	{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n\t.text\n sw $ra,%s_RA\n\n", $2,$2,$2); strcpy(function_name, $2);}
+headstart	: function_start LP	parameters RP COLON										{printf("\t.text\n sw $ra,%s_RA\n\n", function_name);print_all_scope();}
+			| function_start LP RP COLON												{printf("\t.text\n sw $ra,%s_RA\n\n", function_name);}
+function_start	: DEF ID																{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n", $2,$2); strcpy(function_name, $2);}
 
-function	: headstart parameters RP COLON statements  ENDDEF 							
-		| headstart RP COLON statements ENDDEF 											{free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}
+function	: headstart statements  ENDDEF 												{free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}
 
-parameters	: parameters COMMA ID 
-		| ID
+parameters	: parameters COMMA ID 														{printf(" %s_%s\:   .word 0\n",function_name,$3); add_in_scope($3, "", 2, 0);}
+		| ID														 				 	{printf(" %s_%s\:   .word 0\n",function_name,$1); add_in_scope($1, "", 2, 0);}												
 
 statements	: statements statement 
 		| statement
@@ -109,7 +113,7 @@ term		: term MUL factor 										  {$$.value = $1.value * $3.value; $$.reg = $1
 		| factor													  {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); $$.is_string = $1.is_string;}
 
 factor		: LP exp RP 
-		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1); sprintf(last_used, "$t%d", $$.reg);}
+		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1); sprintf(last_used, "$t%d", $$.reg); if(function_called == 1){printf("move $a%d, $t%d\n",checkFreeIndexA(),$$.reg);}}
 		| STRING 													  {$$.reg = checkFreeIndex();strcpy($$.this_name, $1); $$.is_string = 1; printf("\t.data\nSTR%d\:\t.asciiz %s\n\t.text\n",checkFreeStr(), $1); str++;sprintf(last_used, "$t%d", $$.reg);printf("la $t%d,STR%d\n",$$.reg,str-1);}
 		| ID 														  {$$.reg = checkFreeIndex();$$.is_string = lookup_type($1); if(lookup_type($1) == 1) {strcpy($$.this_name, lookup_char($1));} else {$$.value = lookup_int($1);} sprintf(last_used,"$t%d", $$.reg);printf("lw %s, %s_%s\n", last_used, function_name, $1);}
 		| TRUE 
@@ -125,8 +129,10 @@ print_stmt	: print_head expression_list RP
 
 input_stmt	: headofid INPUT LP RP									  {printf("li $v0,5\nsyscall\n"); sprintf(last_used, "$v0"); printf("sw %s,%s_%s\n", last_used, function_name, $1);}
 
-call_stmt	: ID LP RP												  {freeTregisters();freeAregisters();printf("jal %s\n", $1);freeTregisters();freeAregisters();} 
-		| ID LP expr_list RP
+id_lp		: ID LP													  {freeTregisters();freeAregisters(); function_called = 1; strcpy($$,$1);}
+
+call_stmt	: id_lp RP												  {printf("jal %s\n", $1);freeLWTregisters();freeLWAregisters();free_all_registers();free_all_registers_a();} 
+		| id_lp expr_list RP										  {printf("jal %s\n", $1);freeLWTregisters();freeLWAregisters(); printf("move $t0,$v0\n");free_all_registers();free_all_registers_a();}
 
 else_colon	: ELSE COLON											  {printf("\nb L%d\nL%d\:\n\t",labels[stack_index], labels[stack_index-1]);}
 
@@ -167,7 +173,28 @@ int checkFreeIndex() {
 			return i;
 		}
 	}
-	yyerror();
+}
+
+checkFreeIndexA() {
+	for(int i = 0 ; i < 8 ; i++) {
+		if(a[i] == 0) {
+			a[i] = 1;
+			return i;
+		}
+	}
+}
+
+void print_all_scope() {
+	int i = 0;
+	int a = 0;
+	for(i = 0; i < 20; i++) {
+		
+		if(strcmp(scope[i].id_name,"") == 0) {
+			return;
+		}
+		printf("sw $a%d,%s_%s\n",a,function_name,scope[i].id_name);
+		a++;
+	}
 }
 
 int itExists(char *name) {
@@ -176,7 +203,7 @@ int itExists(char *name) {
 		// printf("Entry %d : %s\n", i, scope[i].id_name);
 		if(strcmp(scope[i].id_name,name) == 0) {
 			// printf("What the fuck, it exists!\n");
-			//We found the ID
+			//We found thed ID
 			return 0;
 		}
 	}
@@ -194,6 +221,13 @@ void free_all_registers() {
 	}
 }
 
+void free_all_registers_a() {
+	int i = 0;
+	for(i = 0; i < 4; i++) {
+		a[i] = 0;
+	}
+}
+
 int main() {
 	 //Code for debugging
     #if YYDEBUG == 1
@@ -208,6 +242,7 @@ int main() {
 	}
 	str = 0;
 	label = -1;
+	function_called = 0;
    yyparse();
    if (!semantic_error){
 	fprintf(stderr, "%s", pass_msg);
@@ -306,11 +341,30 @@ void freeTregisters() {
 	}
 }
 
+void freeLWTregisters() {
+	printf("lw $t0, main_registers\n");
+	int i = 1;
+	int x = 4;
+	for(i = 1; i < 7; i++) {
+		printf("lw $t%d, main_registers+%d\n",i, x);
+		x += 4;
+	}
+}
+
 void freeAregisters() {
 	int i = 0;
 	int x = 32;
 	for(i = 0; i < 4; i++) {
 		printf("sw $a%d, main_registers+%d\n", i, x);
+		x += 4;
+	}
+}
+
+void freeLWAregisters() {
+	int i = 0;
+	int x = 32;
+	for(i = 0; i < 4; i++) {
+		printf("lw $a%d, main_registers+%d\n", i, x);
 		x += 4;
 	}
 }

@@ -14,6 +14,8 @@ char last_used[20];
 int is_print;
 int str;
 int label;
+int labels[15];
+int stack_index;
 
 //Functions_dused
 char* lookup_char(char *name);
@@ -28,7 +30,7 @@ struct symbol_table {
 struct symbol_table *scope;
 
 
-//Creating an array of sdTdcsd_regdisdtdeffrsdd that hfdolds int dvalue,t# is empty if it's 0 and 1 if it is occupied
+//Creating an array of sdTdcsd_regdisdtdeffrsdd thcat hfdolds int dvalue,t# is empty if it's 0 and 1 if it is occupied
 int t[8];
 %}
  
@@ -81,7 +83,7 @@ statement	: assignment_stmt
 		| call_stmt 
 		| return_stmt
 
-headofid	:	ID ASSIGN											  {printf("\t.data\n\t.align 2\n%s_%s\: .word 0\n\t.text\n", function_name, $1); strcpy($$, $1);}
+headofid	:	ID ASSIGN											  {if(itExists($1) == 1) {printf("\t.data\n\t.align 2\n%s_%s\: .word 0\n\t.text\n", function_name, $1); strcpy($$, $1);}}
 
 assignment_stmt	: headofid expression								  {printf("sw %s,%s_%s\n\n", last_used, function_name, $1); free_all_registers(); add_in_scope($1,$2.this_name,$2.is_string,$2.value);}							  
 
@@ -94,7 +96,7 @@ rel_exp		: exp EQ exp
 		| exp NE exp 
 		| exp LT exp 												  {$$.reg = $1.reg; printf("slt $t%d,$t%d,$t%d\n", $1.reg,$1.reg,$3.reg);free_register($3.reg);free_register($$.reg);}
 		| exp LE exp 
-		| exp GT exp 
+		| exp GT exp 												  {$$.reg = $1.reg; printf("sgt $t%d,$t%d,$t%d\n", $1.reg,$1.reg,$3.reg);free_register($3.reg);free_register($$.reg);}
 		| exp GE exp 
 		| LP rel_exp RP
 
@@ -126,12 +128,12 @@ input_stmt	: headofid INPUT LP RP									  {printf("li $v0,5\nsyscall\n"); spri
 call_stmt	: ID LP RP												  {freeTregisters();freeAregisters();printf("jal %s\n", $1);freeTregisters();freeAregisters();} 
 		| ID LP expr_list RP
 
-else_colon	: ELSE COLON											  {printf("\nb L%d\nL%d\:\n\t",label, label-1);}
+else_colon	: ELSE COLON											  {printf("\nb L%d\nL%d\:\n\t",labels[stack_index], labels[stack_index-1]);}
 
 condition_stmt	: if_head statements ENDIF 
-		| if_head statements else_colon statements ENDIF			  {printf("\nL%d\:\n\t", label);}
+		| if_head statements else_colon statements ENDIF			  {printf("\nL%d\:\n\t", labels[stack_index]);popTwoOnStack();}
 
-if_head		: IF expression COLON									 {printf("beqz $t%d,L%d\n", $2.reg, checkFreeLabel());}
+if_head		: IF expression COLON									 {label+=2;pushTwoOnStack();printf("beqz $t%d,L%d\n", $2.reg, labels[stack_index-1]);}
 
 while_stmt	: WHILE expression COLON statements ENDWHILE
 
@@ -164,6 +166,19 @@ int checkFreeIndex() {
 	yyerror();
 }
 
+int itExists(char *name) {
+	// printf("What I am looking for is : %s\n", name);
+	for(int i = 0; i < 20; i++) {
+		// printf("Entry %d : %s\n", i, scope[i].id_name);
+		if(strcmp(scope[i].id_name,name) == 0) {
+			// printf("What the fuck, it exists!\n");
+			//We found the ID
+			return 0;
+		}
+	}
+	return 1;
+}
+
 void free_register(int i) {
 	t[i] = 0;
 }
@@ -182,15 +197,22 @@ int main() {
     yydebug = 1;
     #endif
 
+	stack_index = -1;
 	scope = malloc(20 * sizeof * scope);
-
+	for(int i = 0; i < 15; i++) {
+		labels[i] = 0;
+	}
 	str = 0;
-	label = 0;
+	label = -1;
    yyparse();
    if (!semantic_error){
 	fprintf(stderr, "%s", pass_msg);
    }
    return 0;
+}
+
+void addTwoOnLabel() {
+	label += 2;
 }
 
 void add_in_scope(char* id, char* str_value, int type, int value) {
@@ -237,6 +259,31 @@ int lookup_int(char *name) {
 	}
 }
  
+
+pushTwoOnStack() {
+	int i = 0;
+	for(i = 0; i < 15; i++) {
+		if(labels[i] == 0) {
+			labels[i] = label;
+			labels[i+1] = label+1;
+			stack_index += 2;
+			return;
+		}
+	}
+} 
+
+popTwoOnStack() {
+	int i = 0;
+	for(i = 0; i < 15; i++) {
+		if(labels[i] == 0) {
+			labels[i-1] = 0;
+			labels[i-2] = 0;
+			stack_index -= 2;
+			return;
+		}
+	}
+}
+
 //int yyerror (char const *s) {
 int yyerror(){
    //fprintf (stderr, "%s at line %d\n", s, yylineno);

@@ -73,7 +73,7 @@
 #include <string.h>
 
 extern int yylineno;
-//int yyerror(char dcdddonsdt *s);
+//int yyerror(char dcdddonsdsdt *s);
 int yyerror();
 int yylex();
 const char* pass_msg = "Input Passed Checking\n";
@@ -87,6 +87,8 @@ int labels[15];
 int stack_index;
 int function_called;
 int is_return;
+int inside;
+int inside_a;
 
 //Functions_dused
 char* lookup_char(char *name);
@@ -101,11 +103,11 @@ struct symbol_table {
 struct symbol_table *scope;
 
 
-//Creating an array of sdTdcsd_regdisdtdeffrsdd thcat hfdolds int dvalue,t# is empty if it's 0 and 1 if it is occupied
+//Creating an array of sdTdcsd_redgdisdtdeffrsdd thcat hfdolds inct dvalue,t# is empty if it's 0 and 1 if it is occupied
 int t[8];
 int a[4];
 
-#line 109 "p4.tab.c"
+#line 111 "p4.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -191,7 +193,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 41 "p4_c.y"
+#line 43 "p4_c.y"
 
 	char id_name[30];
 	char name[30];
@@ -203,7 +205,7 @@ union YYSTYPE
 		int is_string;
 	} loc;
 
-#line 207 "p4.tab.c"
+#line 209 "p4.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -581,13 +583,13 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    66,    66,    68,    70,    71,    73,    74,    76,    78,
-      80,    81,    83,    84,    86,    87,    88,    89,    90,    91,
-      92,    94,    96,    98,   100,   101,   103,   104,   105,   106,
-     107,   108,   109,   111,   112,   113,   115,   116,   117,   119,
-     120,   121,   122,   123,   124,   125,   126,   128,   130,   132,
-     134,   136,   138,   139,   141,   143,   144,   146,   148,   150,
-     152,   154,   155,   157,   158,   160,   161,   163,   164,   165
+       0,    68,    68,    70,    72,    73,    75,    76,    78,    80,
+      82,    83,    85,    86,    88,    89,    90,    91,    92,    93,
+      94,    96,    98,   100,   102,   103,   105,   106,   107,   108,
+     109,   110,   111,   113,   114,   115,   117,   118,   119,   121,
+     122,   123,   124,   125,   126,   127,   128,   130,   132,   134,
+     136,   138,   140,   141,   143,   145,   146,   148,   150,   152,
+     154,   156,   157,   159,   160,   162,   163,   165,   166,   167
 };
 #endif
 
@@ -1472,247 +1474,253 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 66 "p4_c.y"
+#line 68 "p4_c.y"
                                                                                                                                                 {printf("\nli $v0,10\nsyscall\n");}
-#line 1478 "p4.tab.c"
+#line 1480 "p4.tab.c"
     break;
 
   case 3:
-#line 68 "p4_c.y"
-                                                                                                                                                {printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");freeScopes();}
-#line 1484 "p4.tab.c"
+#line 70 "p4_c.y"
+                                                                                                                                                {printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");freeScopes(); strcpy(function_name,"main"); free_all_registers(); free_all_registers_a();}
+#line 1486 "p4.tab.c"
     break;
 
   case 4:
-#line 70 "p4_c.y"
+#line 72 "p4_c.y"
                                                                                                                                         {freeScopes();}
-#line 1490 "p4.tab.c"
+#line 1492 "p4.tab.c"
     break;
 
   case 5:
-#line 71 "p4_c.y"
+#line 73 "p4_c.y"
                                                                                                                                                                         {freeScopes();}
-#line 1496 "p4.tab.c"
+#line 1498 "p4.tab.c"
     break;
 
   case 6:
-#line 73 "p4_c.y"
+#line 75 "p4_c.y"
                                                                                                                                         {printf("\t.text\n sw $ra,%s_RA\n\n", function_name);print_all_scope();}
-#line 1502 "p4.tab.c"
+#line 1504 "p4.tab.c"
     break;
 
   case 7:
-#line 74 "p4_c.y"
+#line 76 "p4_c.y"
                                                                                                                                                 {printf("\t.text\n sw $ra,%s_RA\n\n", function_name);}
-#line 1508 "p4.tab.c"
+#line 1510 "p4.tab.c"
     break;
 
   case 8:
-#line 76 "p4_c.y"
-                                                                                                                                                        {printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n", (yyvsp[0].name),(yyvsp[0].name)); strcpy(function_name, (yyvsp[0].name));}
-#line 1514 "p4.tab.c"
+#line 78 "p4_c.y"
+                                                                                                                                                        {printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n", (yyvsp[0].name),(yyvsp[0].name)); strcpy(function_name, (yyvsp[0].name));printf("%s_registers\: .space 48\n", function_name);}
+#line 1516 "p4.tab.c"
     break;
 
   case 9:
-#line 78 "p4_c.y"
+#line 80 "p4_c.y"
                                                                                                                                         {if(is_return == 1){free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tmove $v0,%s\n", last_used);printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}else{free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}}
-#line 1520 "p4.tab.c"
+#line 1522 "p4.tab.c"
     break;
 
   case 10:
-#line 80 "p4_c.y"
+#line 82 "p4_c.y"
                                                                                                                                                 {printf(" %s_%s\:   .word 0\n",function_name,(yyvsp[0].name)); add_in_scope((yyvsp[0].name), "", 2, 0);}
-#line 1526 "p4.tab.c"
+#line 1528 "p4.tab.c"
     break;
 
   case 11:
-#line 81 "p4_c.y"
+#line 83 "p4_c.y"
                                                                                                                                                                         {printf(" %s_%s\:   .word 0\n",function_name,(yyvsp[0].name)); add_in_scope((yyvsp[0].name), "", 2, 0);}
-#line 1532 "p4.tab.c"
+#line 1534 "p4.tab.c"
     break;
 
   case 21:
-#line 94 "p4_c.y"
+#line 96 "p4_c.y"
                                                                                                                           {if(itExists((yyvsp[-1].name)) == 1) {printf("\t.data\n\t.align 2\n%s_%s\: .word 0\n\t.text\n", function_name, (yyvsp[-1].name)); strcpy((yyval.id_name), (yyvsp[-1].name));}}
-#line 1538 "p4.tab.c"
+#line 1540 "p4.tab.c"
     break;
 
   case 22:
-#line 96 "p4_c.y"
+#line 98 "p4_c.y"
                                                                                                   {printf("sw %s,%s_%s\n\n", last_used, function_name, (yyvsp[-1].id_name)); free_all_registers(); add_in_scope((yyvsp[-1].id_name),(yyvsp[0].loc).this_name,(yyvsp[0].loc).is_string,(yyvsp[0].loc).value);}
-#line 1544 "p4.tab.c"
+#line 1546 "p4.tab.c"
     break;
 
   case 23:
-#line 98 "p4_c.y"
+#line 100 "p4_c.y"
                                                                                                                   {is_return = 1;}
-#line 1550 "p4.tab.c"
+#line 1552 "p4.tab.c"
     break;
 
   case 24:
-#line 100 "p4_c.y"
+#line 102 "p4_c.y"
                                                                                                                       {(yyval.loc).reg = (yyvsp[0].loc).reg;}
-#line 1556 "p4.tab.c"
+#line 1558 "p4.tab.c"
     break;
 
   case 25:
-#line 101 "p4_c.y"
+#line 103 "p4_c.y"
                                                                                                                               {(yyval.loc).reg = (yyvsp[0].loc).reg; (yyval.loc).value = (yyvsp[0].loc).value; strcpy((yyval.loc).this_name, (yyvsp[0].loc).this_name); (yyval.loc).is_string = (yyvsp[0].loc).is_string;}
-#line 1562 "p4.tab.c"
+#line 1564 "p4.tab.c"
     break;
 
   case 28:
-#line 105 "p4_c.y"
+#line 107 "p4_c.y"
                                                                                                                           {(yyval.loc).reg = (yyvsp[-2].loc).reg; printf("slt $t%d,$t%d,$t%d\n", (yyvsp[-2].loc).reg,(yyvsp[-2].loc).reg,(yyvsp[0].loc).reg);free_register((yyvsp[0].loc).reg);free_register((yyval.loc).reg);}
-#line 1568 "p4.tab.c"
+#line 1570 "p4.tab.c"
     break;
 
   case 30:
-#line 107 "p4_c.y"
+#line 109 "p4_c.y"
                                                                                                                           {(yyval.loc).reg = (yyvsp[-2].loc).reg; printf("sgt $t%d,$t%d,$t%d\n", (yyvsp[-2].loc).reg,(yyvsp[-2].loc).reg,(yyvsp[0].loc).reg);free_register((yyvsp[0].loc).reg);free_register((yyval.loc).reg);}
-#line 1574 "p4.tab.c"
+#line 1576 "p4.tab.c"
     break;
 
   case 33:
-#line 111 "p4_c.y"
+#line 113 "p4_c.y"
                                                                                                                           {(yyval.loc).reg = (yyvsp[-2].loc).reg; (yyval.loc).value = (yyvsp[-2].loc).value + (yyvsp[0].loc).value;  printf("add $t%d,$t%d,$t%d\n", (yyval.loc).reg, (yyval.loc).reg, (yyvsp[0].loc).reg); sprintf(last_used, "$t%d", (yyval.loc).reg);free_register((yyvsp[0].loc).reg);}
-#line 1580 "p4.tab.c"
+#line 1582 "p4.tab.c"
     break;
 
   case 34:
-#line 112 "p4_c.y"
+#line 114 "p4_c.y"
                                                                                                                           {(yyval.loc).reg = (yyvsp[-2].loc).reg; (yyval.loc).value = (yyvsp[-2].loc).value - (yyvsp[0].loc).value;  printf("sub $t%d,$t%d,$t%d\n", (yyval.loc).reg, (yyval.loc).reg, (yyvsp[0].loc).reg); sprintf(last_used, "$t%d", (yyval.loc).reg);free_register((yyvsp[0].loc).reg);}
-#line 1586 "p4.tab.c"
+#line 1588 "p4.tab.c"
     break;
 
   case 35:
-#line 113 "p4_c.y"
+#line 115 "p4_c.y"
                                                                                                                                   {(yyval.loc).reg = (yyvsp[0].loc).reg; (yyval.loc).value = (yyvsp[0].loc).value; strcpy((yyval.loc).this_name, (yyvsp[0].loc).this_name); (yyval.loc).is_string = (yyvsp[0].loc).is_string;}
-#line 1592 "p4.tab.c"
+#line 1594 "p4.tab.c"
     break;
 
   case 36:
-#line 115 "p4_c.y"
+#line 117 "p4_c.y"
                                                                                                                   {(yyval.loc).value = (yyvsp[-2].loc).value * (yyvsp[0].loc).value; (yyval.loc).reg = (yyvsp[-2].loc).reg; printf("mul $t%d,$t%d,$t%d\n", (yyval.loc).reg, (yyval.loc).reg, (yyvsp[0].loc).reg); sprintf(last_used, "$t%d", (yyval.loc).reg); free_register((yyvsp[0].loc).reg);}
-#line 1598 "p4.tab.c"
+#line 1600 "p4.tab.c"
     break;
 
   case 37:
-#line 116 "p4_c.y"
+#line 118 "p4_c.y"
                                                                                                                           {(yyval.loc).value = (yyvsp[-2].loc).value / (yyvsp[0].loc).value; (yyval.loc).reg = (yyvsp[-2].loc).reg; printf("div $t%d,$t%d,$t%d\n", (yyval.loc).reg, (yyval.loc).reg, (yyvsp[0].loc).reg); sprintf(last_used, "$t%d", (yyval.loc).reg); free_register((yyvsp[0].loc).reg);}
-#line 1604 "p4.tab.c"
+#line 1606 "p4.tab.c"
     break;
 
   case 38:
-#line 117 "p4_c.y"
+#line 119 "p4_c.y"
                                                                                                                                   {(yyval.loc).reg = (yyvsp[0].loc).reg; (yyval.loc).value = (yyvsp[0].loc).value; strcpy((yyval.loc).this_name, (yyvsp[0].loc).this_name); (yyval.loc).is_string = (yyvsp[0].loc).is_string;}
-#line 1610 "p4.tab.c"
+#line 1612 "p4.tab.c"
     break;
 
   case 40:
-#line 120 "p4_c.y"
+#line 122 "p4_c.y"
                                                                               {(yyval.loc).reg = checkFreeIndex(); (yyval.loc).value = (yyvsp[0].value); printf("li $t%d, %d\n", (yyval.loc).reg, (yyvsp[0].value)); sprintf(last_used, "$t%d", (yyval.loc).reg); if(function_called == 1){printf("move $a%d, $t%d\n",checkFreeIndexA(),(yyval.loc).reg); free_all_registers();}}
-#line 1616 "p4.tab.c"
+#line 1618 "p4.tab.c"
     break;
 
   case 41:
-#line 121 "p4_c.y"
+#line 123 "p4_c.y"
                                                                                                                                   {(yyval.loc).reg = checkFreeIndex();strcpy((yyval.loc).this_name, (yyvsp[0].name)); (yyval.loc).is_string = 1; printf("\t.data\nSTR%d\:\t.asciiz %s\n\t.text\n",checkFreeStr(), (yyvsp[0].name)); str++;sprintf(last_used, "$t%d", (yyval.loc).reg);printf("la $t%d,STR%d\n",(yyval.loc).reg,str-1);}
-#line 1622 "p4.tab.c"
+#line 1624 "p4.tab.c"
     break;
 
   case 42:
-#line 122 "p4_c.y"
+#line 124 "p4_c.y"
                                                                                                                                   {(yyval.loc).reg = checkFreeIndex();(yyval.loc).is_string = lookup_type((yyvsp[0].name)); if(lookup_type((yyvsp[0].name)) == 1) {strcpy((yyval.loc).this_name, lookup_char((yyvsp[0].name)));} else {(yyval.loc).value = lookup_int((yyvsp[0].name));} sprintf(last_used,"$t%d", (yyval.loc).reg);printf("lw %s, %s_%s\n", last_used, function_name, (yyvsp[0].name));if(function_called == 1){printf("move $a%d, $t%d\n",checkFreeIndexA(),(yyval.loc).reg); free_all_registers();}}
-#line 1628 "p4.tab.c"
+#line 1630 "p4.tab.c"
     break;
 
   case 45:
-#line 125 "p4_c.y"
+#line 127 "p4_c.y"
                                                                                                                           {printf("neg $t%d,$t%d\n", (yyvsp[0].loc).reg, (yyvsp[0].loc).reg);}
-#line 1634 "p4.tab.c"
+#line 1636 "p4.tab.c"
+    break;
+
+  case 46:
+#line 128 "p4_c.y"
+                                                                                                                                  {}
+#line 1642 "p4.tab.c"
     break;
 
   case 47:
-#line 128 "p4_c.y"
+#line 130 "p4_c.y"
                                                                                                                           {is_print = 1;}
-#line 1640 "p4.tab.c"
+#line 1648 "p4.tab.c"
     break;
 
   case 50:
-#line 134 "p4_c.y"
+#line 136 "p4_c.y"
                                                                                                           {printf("li $v0,5\nsyscall\n"); sprintf(last_used, "$v0"); printf("sw %s,%s_%s\n", last_used, function_name, (yyvsp[-3].id_name));}
-#line 1646 "p4.tab.c"
+#line 1654 "p4.tab.c"
     break;
 
   case 51:
-#line 136 "p4_c.y"
-                                                                                                                          {freeTregisters();freeAregisters(); function_called = 1; strcpy((yyval.name),(yyvsp[-1].name));}
-#line 1652 "p4.tab.c"
+#line 138 "p4_c.y"
+                                                                                                                          {if(strcmp(function_name,"main")==0){inside++;}freeTregisters();freeAregisters(); function_called = 1; strcpy((yyval.name),(yyvsp[-1].name));}
+#line 1660 "p4.tab.c"
     break;
 
   case 52:
-#line 138 "p4_c.y"
+#line 140 "p4_c.y"
                                                                                                                           {printf("jal %s\n", (yyvsp[-1].name));freeLWTregisters();freeLWAregisters();free_all_registers();free_all_registers_a();}
-#line 1658 "p4.tab.c"
+#line 1666 "p4.tab.c"
     break;
 
   case 53:
-#line 139 "p4_c.y"
-                                                                                                                  {printf("jal %s\n", (yyvsp[-2].name));freeLWTregisters();freeLWAregisters(); printf("move $t0,$v0\n");free_all_registers();free_all_registers_a();}
-#line 1664 "p4.tab.c"
+#line 141 "p4_c.y"
+                                                                                                                  {printf("jal %s\n", (yyvsp[-2].name));freeLWTregisters();freeLWAregisters(); printf("move %s,$v0\n", last_used);if(inside == 2){printf("move $a%d,%s\n", inside_a, last_used);inside_a++;}free_all_registers_a();if(strcmp(function_name,"main") == 0){inside--;}}
+#line 1672 "p4.tab.c"
     break;
 
   case 54:
-#line 141 "p4_c.y"
+#line 143 "p4_c.y"
                                                                                                                   {printf("\nb L%d\nL%d\:\n\t",labels[stack_index], labels[stack_index-1]);}
-#line 1670 "p4.tab.c"
+#line 1678 "p4.tab.c"
     break;
 
   case 56:
-#line 144 "p4_c.y"
+#line 146 "p4_c.y"
                                                                                           {printf("\nL%d\:\n\t", labels[stack_index]);popTwoOnStack();}
-#line 1676 "p4.tab.c"
+#line 1684 "p4.tab.c"
     break;
 
   case 57:
-#line 146 "p4_c.y"
+#line 148 "p4_c.y"
                                                                                                          {label+=2;pushTwoOnStack();printf("beqz $t%d,L%d\n", (yyvsp[-1].loc).reg, labels[stack_index-1]);}
-#line 1682 "p4.tab.c"
+#line 1690 "p4.tab.c"
     break;
 
   case 58:
-#line 148 "p4_c.y"
+#line 150 "p4_c.y"
                                                                                                                          {label+=2;pushTwoOnStack();printf("L%d\:\t",labels[stack_index-1]);}
-#line 1688 "p4.tab.c"
+#line 1696 "p4.tab.c"
     break;
 
   case 59:
-#line 150 "p4_c.y"
-                                                                                         {printf("beqz $t%d,L%d\n",(yyvsp[-1].loc).reg,labels[stack_index]);}
-#line 1694 "p4.tab.c"
+#line 152 "p4_c.y"
+                                                                                         {printf("beqz $t%d,L%d\n",(yyvsp[-1].loc).reg,labels[stack_index]);checkFreeIndex();}
+#line 1702 "p4.tab.c"
     break;
 
   case 60:
-#line 152 "p4_c.y"
+#line 154 "p4_c.y"
                                                                                          {printf("b L%d\nL%d\:\n",labels[stack_index-1],labels[stack_index]); popTwoOnStack();}
-#line 1700 "p4.tab.c"
+#line 1708 "p4.tab.c"
     break;
 
   case 61:
-#line 154 "p4_c.y"
+#line 156 "p4_c.y"
                                                                                  {if(is_print == 1) {if((yyvsp[0].loc).is_string == 1){printf("li $v0,4\nmove $a0,%s\nsyscall\n",last_used); free_all_registers();} else {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}}
-#line 1706 "p4.tab.c"
+#line 1714 "p4.tab.c"
     break;
 
   case 62:
-#line 155 "p4_c.y"
+#line 157 "p4_c.y"
                                                                                                                          {(yyval.loc).reg = (yyvsp[0].loc).reg; (yyval.loc).value = (yyvsp[0].loc).value; strcpy((yyval.loc).this_name, (yyvsp[0].loc).this_name); if(is_print == 1) {if((yyvsp[0].loc).is_string != 1){printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();} else {printf("li $v0,4\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}} free_all_registers();}
-#line 1712 "p4.tab.c"
+#line 1720 "p4.tab.c"
     break;
 
 
-#line 1716 "p4.tab.c"
+#line 1724 "p4.tab.c"
 
       default: break;
     }
@@ -1944,7 +1952,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 167 "p4_c.y"
+#line 169 "p4_c.y"
 
 
 int checkFreeStr() {
@@ -2032,6 +2040,8 @@ int main() {
 	for(int i = 0; i < 15; i++) {
 		labels[i] = 0;
 	}
+	inside_a = 0;
+	inside = 0;
 	str = 0;
 	label = -1;
 	function_called = 0;
@@ -2124,21 +2134,21 @@ int yyerror(){
 }
 
 void freeTregisters() {
-	printf("sw $t0, main_registers\n");
+	printf("sw $t0, %s_registers\n", function_name);
 	int i = 1;
 	int x = 4;
 	for(i = 1; i < 7; i++) {
-		printf("sw $t%d, main_registers+%d\n",i, x);
+		printf("sw $t%d, %s_registers+%d\n",i, function_name,x);
 		x += 4;
 	}
 }
 
 void freeLWTregisters() {
-	printf("lw $t0, main_registers\n");
+	printf("lw $t0, %s_registers\n", function_name);
 	int i = 1;
 	int x = 4;
 	for(i = 1; i < 7; i++) {
-		printf("lw $t%d, main_registers+%d\n",i, x);
+		printf("lw $t%d, %s_registers+%d\n",i, function_name,x);
 		x += 4;
 	}
 }
@@ -2147,7 +2157,7 @@ void freeAregisters() {
 	int i = 0;
 	int x = 32;
 	for(i = 0; i < 4; i++) {
-		printf("sw $a%d, main_registers+%d\n", i, x);
+		printf("sw $a%d, %s_registers+%d\n", i,function_name, x);
 		x += 4;
 	}
 }
@@ -2156,7 +2166,7 @@ void freeLWAregisters() {
 	int i = 0;
 	int x = 32;
 	for(i = 0; i < 4; i++) {
-		printf("lw $a%d, main_registers+%d\n", i, x);
+		printf("lw $a%d, %s_registers+%d\n", i,function_name, x);
 		x += 4;
 	}
 }

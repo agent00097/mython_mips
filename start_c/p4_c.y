@@ -4,7 +4,7 @@
 #include <string.h>
 
 extern int yylineno;
-//int yyerror(char dcdddonsdt *s);
+//int yyerror(char dcdddonsdsdt *s);
 int yyerror();
 int yylex();
 const char* pass_msg = "Input Passed Checking\n";
@@ -18,6 +18,8 @@ int labels[15];
 int stack_index;
 int function_called;
 int is_return;
+int inside;
+int inside_a;
 
 //Functions_dused
 char* lookup_char(char *name);
@@ -32,7 +34,7 @@ struct symbol_table {
 struct symbol_table *scope;
 
 
-//Creating an array of sdTdcsd_regdisdtdeffrsdd thcat hfdolds int dvalue,t# is empty if it's 0 and 1 if it is occupied
+//Creating an array of sdTdcsd_redgdisdtdeffrsdd thcat hfdolds inct dvalue,t# is empty if it's 0 and 1 if it is occupied
 int t[8];
 int a[4];
 %}
@@ -65,7 +67,7 @@ int a[4];
 
 program		: function_list_end end_list 													{printf("\nli $v0,10\nsyscall\n");}
 
-function_list_end	: function_list														{printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");freeScopes();}
+function_list_end	: function_list														{printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");freeScopes(); strcpy(function_name,"main"); free_all_registers(); free_all_registers_a();}
 
 function_list 	: function_list function 												{freeScopes();}	
 		| function																		{freeScopes();}																	
@@ -73,7 +75,7 @@ function_list 	: function_list function 												{freeScopes();}
 headstart	: function_start LP	parameters RP COLON										{printf("\t.text\n sw $ra,%s_RA\n\n", function_name);print_all_scope();}
 			| function_start LP RP COLON												{printf("\t.text\n sw $ra,%s_RA\n\n", function_name);}
 
-function_start	: DEF ID																{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n", $2,$2); strcpy(function_name, $2);}
+function_start	: DEF ID																{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n", $2,$2); strcpy(function_name, $2);printf("%s_registers\: .space 48\n", function_name);}
 
 function	: headstart statements  ENDDEF 												{if(is_return == 1){free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tmove $v0,%s\n", last_used);printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}else{free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}}
 
@@ -123,7 +125,7 @@ factor		: LP exp RP
 		| TRUE 
 		| FALSE 
 		| MINUS factor 												  {printf("neg $t%d,$t%d\n", $2.reg, $2.reg);}
-		| call_stmt
+		| call_stmt													  {}
 
 print_head	: PRINT LP												  {is_print = 1;}
 
@@ -133,10 +135,10 @@ print_stmt	: print_head expression_list RP
 
 input_stmt	: headofid INPUT LP RP									  {printf("li $v0,5\nsyscall\n"); sprintf(last_used, "$v0"); printf("sw %s,%s_%s\n", last_used, function_name, $1);}
 
-id_lp		: ID LP													  {freeTregisters();freeAregisters(); function_called = 1; strcpy($$,$1);}
+id_lp		: ID LP													  {if(strcmp(function_name,"main")==0){inside++;}freeTregisters();freeAregisters(); function_called = 1; strcpy($$,$1);}
 
 call_stmt	: id_lp RP												  {printf("jal %s\n", $1);freeLWTregisters();freeLWAregisters();free_all_registers();free_all_registers_a();} 
-		| id_lp expr_list RP										  {printf("jal %s\n", $1);freeLWTregisters();freeLWAregisters(); printf("move $t0,$v0\n");free_all_registers();free_all_registers_a();}
+		| id_lp expr_list RP										  {printf("jal %s\n", $1);freeLWTregisters();freeLWAregisters(); printf("move %s,$v0\n", last_used);if(inside == 2){printf("move $a%d,%s\n", inside_a, last_used);inside_a++;}free_all_registers_a();if(strcmp(function_name,"main") == 0){inside--;}}
 
 else_colon	: ELSE COLON											  {printf("\nb L%d\nL%d\:\n\t",labels[stack_index], labels[stack_index-1]);}
 
@@ -147,7 +149,7 @@ if_head		: IF expression COLON									 {label+=2;pushTwoOnStack();printf("beqz 
 
 while_head	: WHILE													 {label+=2;pushTwoOnStack();printf("L%d\:\t",labels[stack_index-1]);}
 
-while_other_head	: while_head expression COLON					 {printf("beqz $t%d,L%d\n",$2.reg,labels[stack_index]);}
+while_other_head	: while_head expression COLON					 {printf("beqz $t%d,L%d\n",$2.reg,labels[stack_index]);checkFreeIndex();}
 
 while_stmt	: while_other_head statements ENDWHILE					 {printf("b L%d\nL%d\:\n",labels[stack_index-1],labels[stack_index]); popTwoOnStack();}
 
@@ -251,6 +253,8 @@ int main() {
 	for(int i = 0; i < 15; i++) {
 		labels[i] = 0;
 	}
+	inside_a = 0;
+	inside = 0;
 	str = 0;
 	label = -1;
 	function_called = 0;
@@ -343,21 +347,21 @@ int yyerror(){
 }
 
 void freeTregisters() {
-	printf("sw $t0, main_registers\n");
+	printf("sw $t0, %s_registers\n", function_name);
 	int i = 1;
 	int x = 4;
 	for(i = 1; i < 7; i++) {
-		printf("sw $t%d, main_registers+%d\n",i, x);
+		printf("sw $t%d, %s_registers+%d\n",i, function_name,x);
 		x += 4;
 	}
 }
 
 void freeLWTregisters() {
-	printf("lw $t0, main_registers\n");
+	printf("lw $t0, %s_registers\n", function_name);
 	int i = 1;
 	int x = 4;
 	for(i = 1; i < 7; i++) {
-		printf("lw $t%d, main_registers+%d\n",i, x);
+		printf("lw $t%d, %s_registers+%d\n",i, function_name,x);
 		x += 4;
 	}
 }
@@ -366,7 +370,7 @@ void freeAregisters() {
 	int i = 0;
 	int x = 32;
 	for(i = 0; i < 4; i++) {
-		printf("sw $a%d, main_registers+%d\n", i, x);
+		printf("sw $a%d, %s_registers+%d\n", i,function_name, x);
 		x += 4;
 	}
 }
@@ -375,7 +379,7 @@ void freeLWAregisters() {
 	int i = 0;
 	int x = 32;
 	for(i = 0; i < 4; i++) {
-		printf("lw $a%d, main_registers+%d\n", i, x);
+		printf("lw $a%d, %s_registers+%d\n", i,function_name, x);
 		x += 4;
 	}
 }

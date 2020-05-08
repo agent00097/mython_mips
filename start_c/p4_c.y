@@ -23,6 +23,25 @@ int inside_a;
 
 //Functions_dused
 char* lookup_char(char *name);
+int lookup_int(char *name);
+int lookup_type(char *name);
+int checkFreeStr();
+int checkFreeIndexA();
+int checkFreeIndex();
+int itExists();
+void freeLWAregisters();
+void freeAregisters();
+void freeLWTregisters();
+void freeTregisters();
+void popTwoOnStack();
+void pushTwoOnStack();
+void add_in_scope(char* id, char* str_value, int type, int value);
+void free_all_registers_a();
+void free_all_registers();
+void free_register(int i);
+void freeScopes();
+void print_all_scope();
+
 
 struct symbol_table {
 	char id_name[30];
@@ -67,7 +86,7 @@ int a[4];
 
 program		: function_list_end end_list 													{printf("\nli $v0,10\nsyscall\n");}
 
-function_list_end	: function_list														{printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers\: .space 48\n\t.text\n\nmain\:\n\n");freeScopes(); strcpy(function_name,"main"); free_all_registers(); free_all_registers_a();}
+function_list_end	: function_list														{printf("\n\t.globl main\n\t.data\n\t.align 2\n\nmain_registers: .space 48\n\t.text\n\nmain:\n\n");freeScopes(); strcpy(function_name,"main"); free_all_registers(); free_all_registers_a();}
 
 function_list 	: function_list function 												{freeScopes();}	
 		| function																		{freeScopes();}																	
@@ -75,12 +94,12 @@ function_list 	: function_list function 												{freeScopes();}
 headstart	: function_start LP	parameters RP COLON										{printf("\t.text\n sw $ra,%s_RA\n\n", function_name);print_all_scope();}
 			| function_start LP RP COLON												{printf("\t.text\n sw $ra,%s_RA\n\n", function_name);}
 
-function_start	: DEF ID																{printf("\t.text\n%s\:\n\t.data\n %s_RA\: .word 0\n", $2,$2); strcpy(function_name, $2);printf("%s_registers\: .space 48\n", function_name);}
+function_start	: DEF ID																{printf("\t.text\n%s:\n\t.data\n %s_RA: .word 0\n", $2,$2); strcpy(function_name, $2);printf("%s_registers: .space 48\n", function_name);}
 
 function	: headstart statements  ENDDEF 												{if(is_return == 1){free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tmove $v0,%s\n", last_used);printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}else{free_all_registers();sprintf(last_used, "$t%d", checkFreeIndex());printf("\tlw %s,%s_RA", last_used , function_name); printf("\n\tjr %s\n", last_used); free_all_registers();}}
 
-parameters	: parameters COMMA ID 														{printf(" %s_%s\:   .word 0\n",function_name,$3); add_in_scope($3, "", 2, 0);}
-		| ID														 				 	{printf(" %s_%s\:   .word 0\n",function_name,$1); add_in_scope($1, "", 2, 0);}												
+parameters	: parameters COMMA ID 														{printf(" %s_%s:   .word 0\n",function_name,$3); add_in_scope($3, "", 2, 0);}
+		| ID														 				 	{printf(" %s_%s:   .word 0\n",function_name,$1); add_in_scope($1, "", 2, 0);}												
 
 statements	: statements statement 
 		| statement
@@ -93,7 +112,7 @@ statement	: assignment_stmt
 		| call_stmt 
 		| return_stmt
 
-headofid	:	ID ASSIGN											  {if(itExists($1) == 1) {printf("\t.data\n\t.align 2\n%s_%s\: .word 0\n\t.text\n", function_name, $1); strcpy($$, $1);}}
+headofid	:	ID ASSIGN											  {if(itExists($1) == 1) {printf("\t.data\n\t.align 2\n%s_%s: .word 0\n\t.text\n", function_name, $1); strcpy($$, $1);}}
 
 assignment_stmt	: headofid expression								  {printf("sw %s,%s_%s\n\n", last_used, function_name, $1); free_all_registers(); add_in_scope($1,$2.this_name,$2.is_string,$2.value);}							  
 
@@ -120,7 +139,7 @@ term		: term MUL factor 										  {$$.value = $1.value * $3.value; $$.reg = $1
 
 factor		: LP exp RP 
 		| INTEGER                                                     {$$.reg = checkFreeIndex(); $$.value = $1; printf("li $t%d, %d\n", $$.reg, $1); sprintf(last_used, "$t%d", $$.reg); if(function_called == 1){printf("move $a%d, $t%d\n",checkFreeIndexA(),$$.reg); free_all_registers();}}
-		| STRING 													  {$$.reg = checkFreeIndex();strcpy($$.this_name, $1); $$.is_string = 1; printf("\t.data\nSTR%d\:\t.asciiz %s\n\t.text\n",checkFreeStr(), $1); str++;sprintf(last_used, "$t%d", $$.reg);printf("la $t%d,STR%d\n",$$.reg,str-1);}
+		| STRING 													  {$$.reg = checkFreeIndex();strcpy($$.this_name, $1); $$.is_string = 1; printf("\t.data\nSTR%d:\t.asciiz %s\n\t.text\n",checkFreeStr(), $1); str++;sprintf(last_used, "$t%d", $$.reg);printf("la $t%d,STR%d\n",$$.reg,str-1);}
 		| ID 														  {$$.reg = checkFreeIndex();$$.is_string = lookup_type($1); if(lookup_type($1) == 1) {strcpy($$.this_name, lookup_char($1));} else {$$.value = lookup_int($1);} sprintf(last_used,"$t%d", $$.reg);printf("lw %s, %s_%s\n", last_used, function_name, $1);if(function_called == 1){printf("move $a%d, $t%d\n",checkFreeIndexA(),$$.reg); free_all_registers();}}
 		| TRUE 
 		| FALSE 
@@ -140,18 +159,18 @@ id_lp		: ID LP													  {if(strcmp(function_name,"main")==0){inside++;}free
 call_stmt	: id_lp RP												  {printf("jal %s\n", $1);freeLWTregisters();freeLWAregisters();free_all_registers();free_all_registers_a();} 
 		| id_lp expr_list RP										  {printf("jal %s\n", $1);freeLWTregisters();freeLWAregisters(); printf("move %s,$v0\n", last_used);if(inside == 2){printf("move $a%d,%s\n", inside_a, last_used);inside_a++;}free_all_registers_a();if(strcmp(function_name,"main") == 0){inside--;}}
 
-else_colon	: ELSE COLON											  {printf("\nb L%d\nL%d\:\n\t",labels[stack_index], labels[stack_index-1]);}
+else_colon	: ELSE COLON											  {printf("\nb L%d\nL%d:\n\t",labels[stack_index], labels[stack_index-1]);}
 
 condition_stmt	: if_head statements ENDIF 
-		| if_head statements else_colon statements ENDIF			  {printf("\nL%d\:\n\t", labels[stack_index]);popTwoOnStack();}
+		| if_head statements else_colon statements ENDIF			  {printf("\nL%d:\n\t", labels[stack_index]);popTwoOnStack();}
 
 if_head		: IF expression COLON									 {label+=2;pushTwoOnStack();printf("beqz $t%d,L%d\n", $2.reg, labels[stack_index-1]);}
 
-while_head	: WHILE													 {label+=2;pushTwoOnStack();printf("L%d\:\t",labels[stack_index-1]);}
+while_head	: WHILE													 {label+=2;pushTwoOnStack();printf("L%d:\t",labels[stack_index-1]);}
 
 while_other_head	: while_head expression COLON					 {printf("beqz $t%d,L%d\n",$2.reg,labels[stack_index]);checkFreeIndex();}
 
-while_stmt	: while_other_head statements ENDWHILE					 {printf("b L%d\nL%d\:\n",labels[stack_index-1],labels[stack_index]); popTwoOnStack();}
+while_stmt	: while_other_head statements ENDWHILE					 {printf("b L%d\nL%d:\n",labels[stack_index-1],labels[stack_index]); popTwoOnStack();}
 
 expression_list	: expression_list comma_found expression 			 {if(is_print == 1) {if($3.is_string == 1){printf("li $v0,4\nmove $a0,%s\nsyscall\n",last_used); free_all_registers();} else {printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}}}
 		| expression												 {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); if(is_print == 1) {if($1.is_string != 1){printf("li $v0,1\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();} else {printf("li $v0,4\nmove $a0,%s\nsyscall\n", last_used); free_all_registers();}} free_all_registers();}
@@ -179,15 +198,17 @@ int checkFreeIndex() {
 			return i;
 		}
 	}
+	return -1;
 }
 
-checkFreeIndexA() {
+int checkFreeIndexA() {
 	for(int i = 0 ; i < 8 ; i++) {
 		if(a[i] == 0) {
 			a[i] = 1;
 			return i;
 		}
 	}
+	return -1;
 }
 
 void print_all_scope() {
@@ -259,9 +280,6 @@ int main() {
 	label = -1;
 	function_called = 0;
    yyparse();
-   if (!semantic_error){
-	fprintf(stderr, "%s", pass_msg);
-   }
    return 0;
 }
 
@@ -288,6 +306,7 @@ int lookup_type(char* name) {
 			return scope[i].type;
 		}
 	}
+	return -1;
 }
 
 int checkFreeLabel() {
@@ -302,6 +321,7 @@ char* lookup_char(char *name) {
 			return scope[i].string_value;
 		}
 	}
+	return "";
 }
 
 int lookup_int(char *name) {
@@ -311,10 +331,11 @@ int lookup_int(char *name) {
 			return scope[i].value;
 		}
 	}
+	return -1;
 }
  
 
-pushTwoOnStack() {
+void pushTwoOnStack() {
 	int i = 0;
 	for(i = 0; i < 15; i++) {
 		if(labels[i] == 0) {
@@ -326,7 +347,7 @@ pushTwoOnStack() {
 	}
 } 
 
-popTwoOnStack() {
+void popTwoOnStack() {
 	int i = 0;
 	for(i = 0; i < 15; i++) {
 		if(labels[i] == 0) {

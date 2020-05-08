@@ -1,8 +1,6 @@
-def countdown() :
-  ! This is a comment
-  a = "this::"
-  more = "string**"
-  print (a," 2 " ,more)
+def f1():
+  m = 5
+  return m
 enddef
 
-countdown()
+print(f1())

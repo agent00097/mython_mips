@@ -1,6 +1,6 @@
-def f1():
-  m = 5
-  return m
+def countdown() :
+  ! This is a comment
+  print (1,2,3,4,5) 
 enddef
 
-print(f1())
+print(countdown())

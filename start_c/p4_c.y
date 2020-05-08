@@ -121,12 +121,12 @@ return_stmt	: RETURN exp 											  {is_return = 1;}
 expression	: rel_exp											      {$$.reg = $1.reg;}
 		| exp													      {$$.reg = $1.reg; $$.value = $1.value; strcpy($$.this_name, $1.this_name); $$.is_string = $1.is_string;}
 
-rel_exp		: exp EQ exp 
-		| exp NE exp 
+rel_exp		: exp EQ exp 											  {$$.reg = $1.reg; printf("seq $t%d,$t%d,$t%d\n", $1.reg,$1.reg,$3.reg);free_register($3.reg);free_register($$.reg);}
+		| exp NE exp 												  {$$.reg = $1.reg; printf("sne $t%d,$t%d,$t%d\n", $1.reg,$1.reg,$3.reg);free_register($3.reg);free_register($$.reg);}
 		| exp LT exp 												  {$$.reg = $1.reg; printf("slt $t%d,$t%d,$t%d\n", $1.reg,$1.reg,$3.reg);free_register($3.reg);free_register($$.reg);}
-		| exp LE exp 
+		| exp LE exp 												  {$$.reg = $1.reg; printf("sle $t%d,$t%d,$t%d\n", $1.reg,$1.reg,$3.reg);free_register($3.reg);free_register($$.reg);}
 		| exp GT exp 												  {$$.reg = $1.reg; printf("sgt $t%d,$t%d,$t%d\n", $1.reg,$1.reg,$3.reg);free_register($3.reg);free_register($$.reg);}
-		| exp GE exp 
+		| exp GE exp 												  {$$.reg = $1.reg; printf("sge $t%d,$t%d,$t%d\n", $1.reg,$1.reg,$3.reg);free_register($3.reg);free_register($$.reg);}
 		| LP rel_exp RP
 
 exp		: exp ADD term 												  {$$.reg = $1.reg; $$.value = $1.value + $3.value;  printf("add $t%d,$t%d,$t%d\n", $$.reg, $$.reg, $3.reg); sprintf(last_used, "$t%d", $$.reg);free_register($3.reg);}
